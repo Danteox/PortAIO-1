@@ -781,7 +781,18 @@ namespace PortAIO
                         new UnderratedAIO.Champions.Skarner();
                         break;
                     case "sona": // vSeries Support
-                        new vSupport_Series.Champions.Sona();
+                        switch (Loader.sona)
+                        {
+                            case 0:
+                                new vSupport_Series.Champions.Sona();
+                                break;
+                            case 1:
+                                ELSona.Sona.Load();
+                                break;
+                            default:
+                                new vSupport_Series.Champions.Sona();
+                                break;
+                        }
                         break;
                     case "teemo": // Sharpshooter
                         new SharpShooter.Plugins.Teemo();

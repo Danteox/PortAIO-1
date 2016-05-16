@@ -192,6 +192,7 @@
     <Compile Include="Champion\FiddleSticks\Core\Spells.cs" />
     <Compile Include="Champion\FiddleSticks\Programs.cs" />
     <Compile Include="Dual-Port\e.MotionKatarina\Program.cs" />
+    <Compile Include="Dual-Port\ElSona\Program.cs" />
     <Compile Include="Dual-Port\ElXerath\Drawings.cs" />
     <Compile Include="Dual-Port\ElXerath\ElXerathMenu.cs" />
     <Compile Include="Dual-Port\ElXerath\Xerath.cs" />

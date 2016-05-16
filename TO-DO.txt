@@ -19,7 +19,6 @@ Port [Will Port One at a time when I'm bored or there's nothing on the to-do] :
 - Nocturne is Back https://github.com/xQxCPMxQx/LeagueSharp2/tree/master/Nocturne
 - Kurisu Riven
 - Chewymoon Shaco
-- ElEasy Sona
 - GosuMechanics Yasuo
 - Universal Leveler or Auto Level Up
 - Sebby Ban Wars
