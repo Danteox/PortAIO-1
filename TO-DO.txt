@@ -1,8 +1,11 @@
 ﻿To-Do :
-- Fix the Lee Sin Crash
+- Fix the Lee Sin Crash (Wait for Original addon)
 
-- Bard Flee [Don't have Bard so can't fix]
-- Tahm Kench Crash [Don't have TK]
+- Bard Flee
+- Tahm Kench Crash
+- OKTW Commits from the past 2 days
+http://prntscr.com/b4uy78
+-Underrated Champions recent updates
 
 ------------------------------------------------------------------------
 
