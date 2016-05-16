@@ -115,7 +115,7 @@ namespace SimpleSion
             {
                 if (getCheckBoxItem(rMenu, "MoveToMouse"))
                 {
-                    var p = ObjectManager.Player.Position.To2D().LSExtend(Game.CursorPos.To2D(), 500);
+                    var p = ObjectManager.Player.Position.LSTo2D().LSExtend(Game.CursorPos.LSTo2D(), 500);
                     EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, p.To3D());
                 }
                 return;
