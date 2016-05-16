@@ -286,7 +286,7 @@ namespace ElRengarRevamped
                     return;
                 }
 
-                if (MenuInit.getCheckBoxItem(MenuInit.betaMenu, "Beta.Cast.Q"))
+                if (MenuInit.getCheckBoxItem(MenuInit.betaMenu, "Beta.Cast.Q1"))
                 {
                     if (drawSearchRange && spells[Spells.R].Level > 0)
                     {
@@ -461,7 +461,7 @@ namespace ElRengarRevamped
 
                     if (RengarR)
                     {
-                        if (Player.Distance(target) <= MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange.Q"))
+                        if (Player.Distance(target) <= MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange.Q")
 
                         {
                             Utility.DelayAction.Add(

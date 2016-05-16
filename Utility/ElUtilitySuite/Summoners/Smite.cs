@@ -18,6 +18,11 @@
 
         public static Obj_AI_Minion Minion;
 
+        /// <summary>
+        ///     The smite range
+        /// </summary>
+        public const float SmiteRange = 570f;
+
         private static readonly string[] BuffsThatActuallyMakeSenseToSmite =
             {
                 "SRU_Red", "SRU_Blue",
@@ -435,7 +440,7 @@
 
                 if (smiteSlot != null)
                 {
-                    this.SmiteSpell = new LeagueSharp.Common.Spell(smiteSlot.Slot, 570f, DamageType.True);
+                    this.SmiteSpell = new LeagueSharp.Common.Spell(smiteSlot.Slot, SmiteRange, DamageType.True);
 
                     Drawing.OnDraw += this.OnDraw;
                     Game.OnUpdate += this.OnUpdate;
@@ -506,7 +511,7 @@
                 {
                     if (this.SmiteSpell.IsReady())
                     {
-                        if (Minion.IsValidTarget(570f))
+                        if (Minion.IsValidTarget(SmiteRange))
                         {
                             if (this.Player.GetSummonerSpellDamage(Minion, LeagueSharp.Common.Damage.SummonerSpell.Smite) >= Minion.Health && this.SmiteSpell.CanCast(Minion))
                             {
@@ -732,12 +737,12 @@
                     if (smiteActive && drawSmite
                         && this.Player.Spellbook.CanUseSpell(smiteSpell.Slot) == SpellState.Ready)
                     {
-                        Render.Circle.DrawCircle(this.Player.Position, 570, Color.Green);
+                        Render.Circle.DrawCircle(this.Player.Position, SmiteRange, Color.Green);
                     }
 
                     if (drawSmite && this.Player.Spellbook.CanUseSpell(smiteSpell.Slot) != SpellState.Ready)
                     {
-                        Render.Circle.DrawCircle(this.Player.Position, 570, Color.Red);
+                        Render.Circle.DrawCircle(this.Player.Position, SmiteRange, Color.Red);
                     }
                 }
             }
@@ -810,7 +815,7 @@
                     var kSableEnemy =
                         HeroManager.Enemies.FirstOrDefault(
                             hero =>
-                            !hero.IsZombie && hero.IsValidTarget(500) && 20 + 8 * this.Player.Level >= hero.Health);
+                           !hero.IsZombie && hero.IsValidTarget(SmiteRange) && 20 + 8 * this.Player.Level >= hero.Health);
                     if (kSableEnemy != null)
                     {
                         this.Player.Spellbook.CastSpell(this.SmiteSpell.Slot, kSableEnemy);
