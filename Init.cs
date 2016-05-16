@@ -824,7 +824,7 @@ namespace PortAIO
                                 UnderratedAIO.Champions.Sion.Load();
                                 break;
                             case 1:
-                                SimpleSion.Program.Game_OnGameLoad();
+                       //         SimpleSion.Program.Game_OnGameLoad();
                                 break;
                             default:
                                 UnderratedAIO.Champions.Sion.Load();
