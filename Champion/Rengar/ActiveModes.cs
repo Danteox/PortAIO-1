@@ -24,6 +24,7 @@ namespace ElRengarRevamped
         {
             try
             {
+                
                 var target = TargetSelector.SelectedTarget ?? TargetSelector.GetTarget(spells[Spells.E].Range, DamageType.Physical);
                 if (target.IsValidTarget() == false)
                 {
@@ -35,8 +36,7 @@ namespace ElRengarRevamped
                 if (Ferocity <= 4)
                 {
                     if (spells[Spells.Q].IsReady() && MenuInit.getCheckBoxItem(MenuInit.comboMenu, "Combo.Use.Q")
-                         && Player.CountEnemiesInRange(Player.AttackRange
-                            + Player.BoundingRadius + 100) != 0)
+                         && Player.CountEnemiesInRange(Player.AttackRange + Player.BoundingRadius + 100) != 0)
                     {
                         if (Orbwalker.CanMove)
                         {
@@ -50,14 +50,12 @@ namespace ElRengarRevamped
                         {
                             if (spells[Spells.E].IsReady() && MenuInit.getCheckBoxItem(MenuInit.comboMenu, "Combo.Use.E"))
                             {
-                                var targetE = TargetSelector.GetTarget(spells[Spells.E].Range, DamageType.Physical);
+                                   var targetE = TargetSelector.GetTarget(
++                                   spells[Spells.E].Range,
+                                    DamageType.Physical);
                                 if (targetE.IsValidTarget())
                                 {
                                     spells[Spells.E].Cast(targetE);
-                                }
-                                foreach (var target2 in HeroManager.Enemies.Where(x => x.IsValidTarget(spells[Spells.E].Range) && !x.IsZombie))
-                                {
-                                    spells[Spells.E].Cast(target2);
                                 }
                             }
                         }
@@ -67,14 +65,12 @@ namespace ElRengarRevamped
                             {
                                 if (Player.IsDashing())
                                 {
-                                    var targetE = TargetSelector.GetTarget(spells[Spells.E].Range, DamageType.Physical);
+                                    var targetE = TargetSelector.GetTarget(
+                                    spells[Spells.E].Range,
+                                    DamageType.Physical);
                                     if (targetE.IsValidTarget())
                                     {
                                         spells[Spells.E].Cast(targetE);
-                                    }
-                                    foreach (var target2 in HeroManager.Enemies.Where(x => x.IsValidTarget(spells[Spells.E].Range) && !x.IsZombie))
-                                    {
-                                        spells[Spells.E].Cast(target2);
                                     }
                                 }
                             }
@@ -101,14 +97,12 @@ namespace ElRengarRevamped
                                 {
                                     if (Orbwalker.CanMove)
                                     {
-                                        var targetE = TargetSelector.GetTarget(spells[Spells.E].Range, DamageType.Physical);
+                                    var targetE = TargetSelector.GetTarget(
+                                    spells[Spells.E].Range,
+                                    DamageType.Physical);
                                         if (targetE.IsValidTarget())
                                         {
                                             spells[Spells.E].Cast(targetE);
-                                        }
-                                        foreach (var target2 in HeroManager.Enemies.Where(x => x.IsValidTarget(spells[Spells.E].Range) && !x.IsZombie))
-                                        {
-                                            spells[Spells.E].Cast(target2);
                                         }
                                     }
 
@@ -126,14 +120,12 @@ namespace ElRengarRevamped
                                 {
                                     if (Player.IsDashing())
                                     {
-                                        var targetE = TargetSelector.GetTarget(spells[Spells.E].Range, DamageType.Physical);
+                                        var targetE = TargetSelector.GetTarget(
+                                        spells[Spells.E].Range,
+                                        DamageType.Physical);
                                         if (targetE.IsValidTarget())
                                         {
                                             spells[Spells.E].Cast(targetE);
-                                        }
-                                        foreach (var target2 in HeroManager.Enemies.Where(x => x.IsValidTarget(spells[Spells.E].Range) && !x.IsZombie))
-                                        {
-                                            spells[Spells.E].Cast(target2);
                                         }
                                     }
                                 }
@@ -210,22 +202,26 @@ namespace ElRengarRevamped
                     return;
                 }
 
-                var pred = spells[Spells.E].GetPrediction(target);
-                if (pred.Hitchance >= HitChance.Low)
-                {
-                    spells[Spells.E].Cast(pred.CastPosition);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
+                spells[Spells.E].Cast(target.ServerPosition);
 
-        /// <summary>
-        ///     Handles W casting
-        /// </summary>
-        private static void CastW()
+                /*     var pred = spells[Spells.E].GetPrediction(target);
+                     if (pred.Hitchance >= HitChance.Low)
+                     {
+                         spells[Spells.E].Cast(pred.CastPosition);
+                     }
+                 }*/
+                 }
+                 catch (Exception e)
+                 {
+                     Console.WriteLine(e);
+                 }          
+   
+    }
+
+    /// <summary>
+    ///     Handles W casting
+    /// </summary>
+    private static void CastW()
         {
             try
             {
@@ -372,16 +368,15 @@ namespace ElRengarRevamped
 
                 LaneItems(minion);
 
-                if (Ferocity == 5
-                    && (Player.Health / Player.MaxHealth) * 100
-                    <= 20)
+                if (Ferocity == 5 && (Player.Health / Player.MaxHealth) * 100 <= 20)
                 {
                     spells[Spells.W].Cast();
                 }
 
                 if (!HasPassive)
                 {
-                    if (MenuInit.getCheckBoxItem(MenuInit.jungleClear, "Jungle.Use.W") && spells[Spells.W].IsReady() && minion.IsValidTarget(spells[Spells.W].Range))
+                    if (MenuInit.getCheckBoxItem(MenuInit.jungleClear, "Jungle.Use.W") && spells[Spells.W].IsReady()
+                        && minion.IsValidTarget(spells[Spells.W].Range))
                     {
                         if (Ferocity == 5 && spells[Spells.Q].IsReady())
                         {
@@ -450,7 +445,8 @@ namespace ElRengarRevamped
                     spells[Spells.W].Cast();
                 }
 
-                if (MenuInit.getCheckBoxItem(MenuInit.laneClear, "Clear.Use.E") && spells[Spells.E].IsReady() && minion.IsValidTarget(spells[Spells.E].Range))
+                if (MenuInit.getCheckBoxItem(MenuInit.laneClear, "Clear.Use.E") && spells[Spells.E].IsReady()
+                    && minion.IsValidTarget(spells[Spells.E].Range))
                 {
                     if (Ferocity == 5)
                     {
@@ -526,7 +522,8 @@ namespace ElRengarRevamped
         /// <returns></returns>
         public static bool LaneItems(Obj_AI_Base target)
         {
-            var units = MinionManager.GetMinions(385, MinionTypes.All, MinionTeam.NotAlly).Count(o => !(o is Obj_AI_Turret));
+            var units =
+            MinionManager.GetMinions(385, MinionTypes.All, MinionTeam.NotAlly).Count(o => !(o is Obj_AI_Turret));
             var count = units;
             var tiamat = Tiamat;
             if (tiamat.IsReady() && count > 0 && tiamat.Cast())

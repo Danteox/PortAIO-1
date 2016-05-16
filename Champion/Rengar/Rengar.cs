@@ -130,9 +130,7 @@ namespace ElRengarRevamped
                     !(MenuInit.getBoxItem(MenuInit.comboMenu, "Combo.Prio") == 0 ||
                       MenuInit.getBoxItem(MenuInit.comboMenu, "Combo.Prio") == 1 && Ferocity == 5))
                 {
-                    var x = Prediction.GetPrediction(args.Target as Obj_AI_Base, Player.AttackCastDelay * 1000);
-                    if (Player.Position.To2D().LSDistance(x.UnitPosition.To2D())
-                        >= Player.BoundingRadius + Player.AttackRange + args.Target.BoundingRadius)
+                    if (Player.CountEnemiesInRange(Player.AttackRange + Player.BoundingRadius + 100) != 0)
                     {
                         args.Process = false;
                         spells[Spells.Q].Cast();
@@ -212,32 +210,26 @@ namespace ElRengarRevamped
                     switch (MenuInit.getBoxItem(MenuInit.comboMenu, "Combo.Prio"))
                     {
                         case 0:
-                            if (spells[Spells.E].IsReady() && target.IsValidTarget(spells[Spells.E].Range))
+                            if (spells[Spells.E].IsReady())
                             {
-                                var pred = spells[Spells.E].GetPrediction(target);
-                                spells[Spells.E].Cast(target);
+                                   var targetE = TargetSelector.GetTarget(
+                                   spells[Spells.E].Range,
+                                    DamageType.Physical);
+                                if (targetE.IsValidTarget())
+                                {
+                                    var pred = spells[Spells.E].GetPrediction(targetE);
+                                    if (pred.Hitchance >= HitChance.High)
+                                    {
+                                        spells[Spells.E].Cast(pred.CastPosition);
+                                    }
+                                }
                             }
                             break;
                         case 2:
-                            if (spells[Spells.Q].IsReady() && target.IsValidTarget(spells[Spells.Q].Range))
+                                if (spells[Spells.Q].IsReady()
+                                && Player.CountEnemiesInRange(Player.AttackRange + Player.BoundingRadius + 100) != 0)
                             {
                                 spells[Spells.Q].Cast();
-                            }
-
-                            if (target.IsValidTarget(spells[Spells.Q].Range))
-                            {
-                                ActiveModes.CastItems(target);
-                                Utility.DelayAction.Add(
-                                    50,
-                                    () =>
-                                    {
-                                        if (target.IsValidTarget(spells[Spells.W].Range))
-                                        {
-                                            spells[Spells.W].Cast();
-                                        }
-
-                                        spells[Spells.E].Cast(target);
-                                    });
                             }
 
                             break;
@@ -394,7 +386,7 @@ namespace ElRengarRevamped
                     switch (args.SData.Name.ToLower())
                     {
                         case "RengarR":
-                            if (Items.CanUseItem(3142))
+                            if (Items.HasItem(3142) && Items.CanUseItem(3142))
                             {
                                 Utility.DelayAction.Add(2000, () => Items.UseItem(3142));
                             }
@@ -451,11 +443,17 @@ namespace ElRengarRevamped
                 Heal();
                 KillstealHandler();
 
-                if (MenuInit.getKeyBindItem(MenuInit.comboMenu, "Combo.TripleQ"))
-                {
-                    Orbwalker.OrbwalkTo(Game.CursorPos);
 
-                    var target = TargetSelector.GetTarget(spells[Spells.E].Range, DamageType.Physical);
+                if (MenuInit.getCheckBoxItem(MenuInit.betaMenu, "Beta.Cast.Q1") &&
+                    MenuInit.getBoxItem(MenuInit.comboMenu, "Combo.Prio") == 2)
+                {
+                    if (Ferocity != 5)
+                    {
+                        return;
+                    }
+
+                    var searchrange = MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange");
+                    var target = HeroManager.Enemies.FirstOrDefault(h => h.IsValidTarget(searchrange, false));
                     if (!target.IsValidTarget())
                     {
                         return;
@@ -463,57 +461,11 @@ namespace ElRengarRevamped
 
                     if (RengarR)
                     {
-                        if (Ferocity == 5 && Player.LSDistance(target) <= spells[Spells.Q].Range)
-                        {
-                            spells[Spells.Q].Cast();
-                        }
-                    }
-                    else
-                    {
-                        spells[Spells.Q].Cast();
-                    }
+                        if (Player.Distance(target) <= MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange.Q"))
 
-                    if (Ferocity <= 4)
-                    {
-                        if (Player.LSDistance(target) <= spells[Spells.Q].Range)
-                        {
-                            spells[Spells.Q].Cast();
-                        }
-                        if (Player.LSDistance(target) <= spells[Spells.W].Range)
-                        {
-                            spells[Spells.W].Cast();
-                        }
-                        if (Player.LSDistance(target) <= spells[Spells.E].Range)
-                        {
-                            spells[Spells.E].Cast(target);
-                        }
-                    }
-                }
-
-                if (MenuInit.getCheckBoxItem(MenuInit.betaMenu, "Beta.Cast.Q") &&
-                    MenuInit.getBoxItem(MenuInit.comboMenu, "Combo.Prio") == 2)
-                {
-                    if (MenuInit.getCheckBoxItem(MenuInit.betaMenu, "Beta.Cast.Youmuu") && !Items.HasItem(3142))
-                    {
-                        return;
-                    }
-
-                    var searchrange = MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange");
-                    var target =
-                        ObjectManager.Get<AIHeroClient>()
-                            .FirstOrDefault(h => h.IsEnemy && h.IsValidTarget(searchrange));
-                    if (!target.IsValidTarget())
-                    {
-                        return;
-                    }
-
-                    if (Ferocity == 5 && RengarR)
-                    {
-                        if (target.LSDistance(Player.ServerPosition)
-                            <= MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange.Q"))
                         {
                             Utility.DelayAction.Add(
-                                MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.Cast.Q.Delay"),
+                                MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.Cast.Q1.Delay"),
                                 () => spells[Spells.Q].Cast());
                         }
                     }
