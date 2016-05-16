@@ -122,18 +122,18 @@
             harassMenu.Add("ElEasy.Ryze.AutoHarass.Mana", new Slider("Minimum Mana", 55, 1, 100));
 
             clearMenu = Menu.AddSubMenu("Clear", "Clear");
-            clearMenu.Add("ElEasy.Ryze.Lasthit.Q", new CheckBox("Use Q LH"));
-            clearMenu.Add("ElEasy.Ryze.Lasthit.W", new CheckBox("Use W LH"));
-            clearMenu.Add("ElEasy.Ryze.Lasthit.E", new CheckBox("Use E LH"));
-            clearMenu.Add("ElEasy.Ryze.LaneClear.Q", new CheckBox("Use Q Lc"));
-            clearMenu.Add("ElEasy.Ryze.LaneClear.W", new CheckBox("Use W Lc"));
-            clearMenu.Add("ElEasy.Ryze.LaneClear.E", new CheckBox("Use E Lc"));
-            clearMenu.Add("ElEasy.Ryze.LaneClear.R", new CheckBox("Use R Lc"));
-            clearMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Lane1", new Slider("Minimum Mana for clear", 1, 0, 100));
-            clearMenu.Add("ElEasy.Ryze.JungleClear.Q", new CheckBox("Use Q Jc"));
-            clearMenu.Add("ElEasy.Ryze.JungleClear.W", new CheckBox("Use W Jc"));
-            clearMenu.Add("ElEasy.Ryze.JungleClear.E", new CheckBox("Use E Jc"));
-            clearMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Jungle", new Slider("Minimum Mana for clear", 55, 0, 100));
+            clearMenu.Add("ElEasy.Ryze.Lasthit.Q", new CheckBox("Use Q Last Hit"));
+            clearMenu.Add("ElEasy.Ryze.Lasthit.W", new CheckBox("Use W Last Hit"));
+            clearMenu.Add("ElEasy.Ryze.Lasthit.E", new CheckBox("Use E Last Hit"));
+            clearMenu.Add("ElEasy.Ryze.LaneClear.Q", new CheckBox("Use Q Lane Clear"));
+            clearMenu.Add("ElEasy.Ryze.LaneClear.W", new CheckBox("Use W Lane Clear"));
+            clearMenu.Add("ElEasy.Ryze.LaneClear.E", new CheckBox("Use E Lane Clear"));
+            clearMenu.Add("ElEasy.Ryze.LaneClear.R", new CheckBox("Use R Lane Clear"));
+            clearMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Lane1", new Slider("Minimum Mana for Lane Clear", 1, 0, 100));
+            clearMenu.Add("ElEasy.Ryze.JungleClear.Q", new CheckBox("Use Q Jungle Clear"));
+            clearMenu.Add("ElEasy.Ryze.JungleClear.W", new CheckBox("Use W Jungle Clear"));
+            clearMenu.Add("ElEasy.Ryze.JungleClear.E", new CheckBox("Use E Jungle Clear"));
+            clearMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Jungle", new Slider("Minimum Mana for Jungle Clear", 55, 0, 100));
 
             miscMenu = Menu.AddSubMenu("Miscellaneous", "Miscellaneous");
             miscMenu.Add("ElEasy.Ryze.GapCloser.Activated", new CheckBox("Anti gapcloser"));
