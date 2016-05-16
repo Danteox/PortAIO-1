@@ -116,6 +116,11 @@ namespace PortAIO
                     new TheCheater.TheCheater().Load();
                 }
 
+                if (Loader.banwards)
+                {
+                    Sebby_Ban_War.Program.Game_OnGameLoad();
+                }
+
                 /*
                 if (Loader.evade)
                 {

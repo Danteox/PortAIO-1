@@ -909,6 +909,7 @@
     <Compile Include="Utility\NabbTracker\Utilities\WardTracker.cs" />
     <Compile Include="Utility\RandomUlt\Helpers\LastPositions.cs" />
     <Compile Include="Utility\RandomUlt\Program.cs" />
+    <Compile Include="Utility\SebbyBanWars\Program.cs" />
     <Compile Include="Utility\SkinHack\Program.cs" />
     <Compile Include="Utility\SkinSDK\MenuConfig.cs" />
     <Compile Include="Utility\SkinSDK\Program.cs" />
