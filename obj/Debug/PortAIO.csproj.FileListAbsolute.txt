@@ -1,1 +1,2 @@
 C:\Users\Pabloo.PABLO\Desktop\24DB4B81\bin\Debug\PortAIO.exe.config
+C:\Users\Pabloo.PABLO\Desktop\24DB4B81\PortAIO\bin\Debug\PortAIO.exe.config
