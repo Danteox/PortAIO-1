@@ -46,6 +46,7 @@ namespace PortAIO.Utility
         public static int ashe { get { return Miscc["ashe"].Cast<ComboBox>().CurrentValue; } }
         public static int vayne { get { return Miscc["vayne"].Cast<ComboBox>().CurrentValue; } }
         public static int quinn { get { return Miscc["quinn"].Cast<ComboBox>().CurrentValue; } }
+        public static int kayle { get { return Miscc["kayle"].Cast<ComboBox>().CurrentValue; } }
         public static int jayce { get { return Miscc["jayce"].Cast<ComboBox>().CurrentValue; } }
         public static int yasuo { get { return Miscc["yasuo"].Cast<ComboBox>().CurrentValue; } }
         public static int katarina { get { return Miscc["katarina"].Cast<ComboBox>().CurrentValue; } }
@@ -99,6 +100,7 @@ namespace PortAIO.Utility
             "Lux", //25
             "Morgana", //26
             "Quinn", //27
+            "Kayle", //28
         });
 
         public static void Menu()
@@ -220,6 +222,10 @@ namespace PortAIO.Utility
                 if (Player.ChampionName.Equals(Champion[27]))
                 {
                     Miscc.Add("quinn", new ComboBox("Use addon for Quinn : ", 0, "GFuel Quinn", "OKTW"));
+                }
+                if (Player.ChampionName.Equals(Champion[28]))
+                {
+                    Miscc.Add("kayle", new ComboBox("Use addon for Quinn : ", 0, "Seph Kayle", "OKTW"));
                 }
             }
             else

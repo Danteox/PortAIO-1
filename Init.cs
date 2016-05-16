@@ -500,8 +500,19 @@ namespace PortAIO
                                 break;
                         }
                         break;
-                    case "kayle": // SephKayle
-                        SephKayle.Program.OnGameLoad();
+                    case "kayle": // SephKayle & OKTW
+                        switch (Loader.kayle)
+                        {
+                            case 0:
+                                SephKayle.Program.OnGameLoad();
+                                break;
+                            case 1:
+                                SebbyLib.Program.GameOnOnGameLoad();
+                                break;
+                            default:
+                                SephKayle.Program.OnGameLoad();
+                                break;
+                        }
                         break;
                     case "aurelionsol": // El Aurelion Sol
                         ElAurelion_Sol.AurelionSol.OnGameLoad();

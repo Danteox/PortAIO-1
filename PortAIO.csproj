@@ -252,6 +252,7 @@
     <Compile Include="Dual-Port\OKTWDarius\Darius.cs" />
     <Compile Include="Dual-Port\OKTWEvelynn\Evelynn.cs" />
     <Compile Include="Dual-Port\OKTWJhin\Jhin.cs" />
+    <Compile Include="Dual-Port\OKTWKayle\Program.cs" />
     <Compile Include="Dual-Port\OKTWKindred\Kindred.cs" />
     <Compile Include="Dual-Port\OKTWKogMaw\KogMaw.cs" />
     <Compile Include="Dual-Port\OKTWLux\Lux.cs" />
@@ -920,6 +921,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="README.md" />
     <None Include="Resources\ChampionData\Aatrox.json" />
     <None Include="Resources\ChampionData\Ahri.json" />
     <None Include="Resources\ChampionData\Akali.json" />
