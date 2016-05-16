@@ -54,7 +54,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(enemy => enemy.IsAlly))
             rMenu.Add("Rally" + enemy.ChampionName, new CheckBox("R ally : " + enemy.ChampionName));
 
-            harassMenu = Config.AddSubMenu("Harass Config");
+            harassMenu = Config.AddSubMenu("Harass");
             foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(enemy => enemy.IsEnemy))
             harassMenu.Add("harras" + enemy.ChampionName, new CheckBox("Harras : " + enemy.ChampionName));
 
