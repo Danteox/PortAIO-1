@@ -192,6 +192,7 @@
     <Compile Include="Champion\FiddleSticks\Core\Spells.cs" />
     <Compile Include="Champion\FiddleSticks\Programs.cs" />
     <Compile Include="Dual-Port\e.MotionKatarina\Program.cs" />
+    <Compile Include="Dual-Port\ElRyze\Program.cs" />
     <Compile Include="Dual-Port\ElSona\Program.cs" />
     <Compile Include="Dual-Port\ElXerath\Drawings.cs" />
     <Compile Include="Dual-Port\ElXerath\ElXerathMenu.cs" />
@@ -835,7 +836,6 @@
     <Compile Include="Utility\ElUtilitySuite\Summoners\Ignite.cs" />
     <Compile Include="Utility\ElUtilitySuite\Summoners\Mark.cs" />
     <Compile Include="Utility\ElUtilitySuite\Summoners\Smite.cs" />
-    <Compile Include="Utility\ElUtilitySuite\Trackers\CooldownTracker.cs" />
     <Compile Include="Utility\ElUtilitySuite\Trackers\JungleTracker.cs" />
     <Compile Include="Utility\ElUtilitySuite\Utility\AntiStealth.cs" />
     <Compile Include="Utility\ElUtilitySuite\Utility\Flash.cs" />

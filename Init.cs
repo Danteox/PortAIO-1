@@ -346,9 +346,21 @@ namespace PortAIO
                     case "pantheon":
                     case "renekton":
                     case "tryndamere":
-                    case "ryze":
-                        ExorAIO.Core.Bootstrap.BuildMenu();
-                        ExorAIO.Core.Bootstrap.LoadChampion();
+                    case "ryze": //
+                        switch (Loader.ryze)
+                        {
+                            case 0:
+                                ExorAIO.Core.Bootstrap.BuildMenu();
+                                ExorAIO.Core.Bootstrap.LoadChampion();
+                                break;
+                            case 1:
+                                ElRyze.Ryze.Load();
+                                break;
+                            default:
+                                ExorAIO.Core.Bootstrap.BuildMenu();
+                                ExorAIO.Core.Bootstrap.LoadChampion();
+                                break;
+                        }
                         break;
                     case "diana":
                         switch (Loader.diana)
