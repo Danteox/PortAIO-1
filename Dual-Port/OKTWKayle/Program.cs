@@ -14,12 +14,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 {
     class Kayle
     {
-        private Menu Config = Program.Config;
-        private Spell E, Q, R, W;
-        private float QMANA = 0, WMANA = 0, EMANA = 0, RMANA = 0;
-        public AIHeroClient Player { get { return ObjectManager.Player; } }
+        private static Menu Config = Program.Config;
+        private static LeagueSharp.Common.Spell E, Q, R, W;
+        private static float QMANA = 0, WMANA = 0, EMANA = 0, RMANA = 0;
+        public static AIHeroClient Player { get { return ObjectManager.Player; } }
         public static Menu drawMenu, qMenu, eMenu, wMenu, rMenu, harassMenu, farmMenu;
-        public void LoadOKTW()
+
+        public static void LoadOKTW()
         {
             Q = new Spell(SpellSlot.Q, 670);
             W = new Spell(SpellSlot.W, 900);
@@ -88,7 +89,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             return m[item].Cast<ComboBox>().CurrentValue;
         }
 
-        private void Game_OnGameUpdate(EventArgs args)
+        private static void Game_OnGameUpdate(EventArgs args)
         {
             if (Program.LagFree(1))
             {
@@ -108,7 +109,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 LogicQ();
         }
 
-        private void LogicR()
+        private static void LogicR()
         {
             foreach (var ally in Program.Allies.Where(ally => ally.IsValid && !ally.IsDead && ally.HealthPercent < 70 && Player.ServerPosition.Distance(ally.ServerPosition) < R.Range && getCheckBoxItem(rMenu, "Rally" + ally.ChampionName)))
             {
@@ -125,7 +126,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private void LogicQ()
+        private static void LogicQ()
         {
             var t = TargetSelector.GetTarget(Q.Range, DamageType.Magical);
 
@@ -142,7 +143,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private void LogicW()
+        private static void LogicW()
         {
             if (!Player.InFountain() && !Player.HasBuff("Recall") && !Player.IsRecalling())
             {
@@ -176,7 +177,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private void LogicE()
+        private static void LogicE()
         {
             if (Program.Combo && Player.Mana > WMANA + EMANA && Player.CountEnemiesInRange(700) > 0)
                 E.Cast();
@@ -186,7 +187,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 E.Cast();
         }
 
-        private void Jungle()
+        private static void Jungle()
         {
             if (Program.LaneClear && Player.Mana > RMANA + WMANA + RMANA + WMANA)
             {
@@ -208,12 +209,12 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private bool FarmE()
+        private static bool FarmE()
         {
             return (Cache.GetMinions(Player.ServerPosition, 600).Count > 0);
         }
 
-        private void SetMana()
+        private static void SetMana()
         {
             if ((Program.getCheckBoxItem("manaDisable") && Program.Combo) || Player.HealthPercent < 20)
             {
@@ -233,7 +234,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 QMANA = QMANA - Player.PARRegenRate * Q.Instance.Cooldown;
 
         }
-        private void Drawing_OnDraw(EventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
             if (getCheckBoxItem(drawMenu, "qRange"))
             {

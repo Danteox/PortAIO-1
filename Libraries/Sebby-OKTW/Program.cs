@@ -231,6 +231,9 @@ namespace SebbyLib
                     case "Quinn":  
                         Quinn.LoadOKTW();
                         break;
+                    case "Kayle":
+                        Kayle.LoadOKTW();
+                        break;
                 }
             }
 
