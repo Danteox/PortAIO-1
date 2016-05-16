@@ -883,8 +883,8 @@ namespace MathFizz
                 new KeyBind("E Flash on target RWQ zhonya", false, KeyBind.BindTypes.HoldActive, 'J'));
             customComboMenu.Add("EFlashComboZhonya", new CheckBox("Use Zhonya with E Flash on target RWQ"));
             customComboMenu.Add("Flee",
-                new KeyBind("Flee Key (Flee does not require a target)", false, KeyBind.BindTypes.HoldActive, 'Q'));
-            customComboMenu.Add("manualR", new KeyBind("Auto cast R key", false, KeyBind.BindTypes.HoldActive, 'K'));
+                new KeyBind("Flee Key (Flee does not require a target)", false, KeyBind.BindTypes.HoldActive, 'Z'));
+            customComboMenu.Add("manualR", new KeyBind("Auto cast R key", false, KeyBind.BindTypes.HoldActive, 'T'));
             customComboMenu.Add("manualRHitchance",
                 new ComboBox("Auto cast R hitchance", 2, "Medium", "High", "Very High"));
 
