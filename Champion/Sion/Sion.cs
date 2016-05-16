@@ -30,10 +30,11 @@ namespace UnderratedAIO.Champions
         public static Vector2 QCastPos = new Vector2();
 
         public static Menu menuD, menuC, menuH, menuLC, menuM;
-        public Vector3 lastQPos;
+        public static Vector3 lastQPos;
         public double[] Rwave = {50, 70, 90};
 
-        public Sion()
+        public static void Load()
+
         {
             IncDamages = new IncomingDamage();
             InitSion();
@@ -61,7 +62,7 @@ namespace UnderratedAIO.Champions
             get { return player.Spellbook.GetSpell(SpellSlot.Q).Name == "sionpassivespeed"; }
         }
 
-        private void Game_OnWndProc(WndEventArgs args)
+        private static void Game_OnWndProc(WndEventArgs args)
         {
             if (args.Msg == (uint) WindowsMessages.WM_RBUTTONDOWN && Q.IsCharging)
             {
@@ -69,7 +70,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void Game_OnProcessPacket(GamePacketEventArgs args)
+        private static void Game_OnProcessPacket(GamePacketEventArgs args)
         {
             if (getCheckBoxItem(menuM, "NoRlock") && args.PacketData[0] == 0x83 && args.PacketData[7] == 0x47 &&
                 args.PacketData[8] == 0x47)
@@ -78,7 +79,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        private static void OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
             if (getCheckBoxItem(menuM, "usewgc") && gapcloser.End.LSDistance(player.Position) < 200)
             {
@@ -86,7 +87,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void InitSion()
+        private static void InitSion()
         {
             Q = new Spell(SpellSlot.Q, 740);
             Q.SetSkillshot(0.6f, 100f, float.MaxValue, false, SkillshotType.SkillshotLine);
@@ -97,7 +98,7 @@ namespace UnderratedAIO.Champions
             R = new Spell(SpellSlot.R);
         }
 
-        private void Game_OnGameUpdate(EventArgs args)
+        private static void Game_OnGameUpdate(EventArgs args)
         {
             if (Q.IsCharging || activatedR)
             {
@@ -143,7 +144,7 @@ namespace UnderratedAIO.Champions
         }
 
 
-        private void Harass()
+        private static void Harass()
         {
             var perc = getSliderItem(menuH, "minmanaH")/100f;
             if (player.Mana < player.MaxMana*perc || Orbwalker.IsAutoAttacking)
@@ -165,7 +166,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void castQ(AIHeroClient target)
+        private static void castQ(AIHeroClient target)
         {
             if (target == null && Q.IsCharging)
             {
@@ -215,7 +216,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void Clear()
+        private static void Clear()
         {
             var perc = getSliderItem(menuLC, "minmana")/100f;
             if (player.Mana < player.MaxMana*perc || Orbwalker.IsAutoAttacking)
@@ -269,7 +270,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void Combo()
+        private static void Combo()
         {
             if (getCheckBoxItem(menuC, "user") && R.IsReady())
             {
@@ -385,7 +386,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void checkCastedQ(Obj_AI_Base target)
+        private static void checkCastedQ(Obj_AI_Base target)
         {
             if ((justQ && target.LSDistance(player) > Q.Range) || !target.IsValidTarget() || target == null)
             {
@@ -407,7 +408,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private Geometry.Polygon GetPoly(Vector3 pos)
+        private static Geometry.Polygon GetPoly(Vector3 pos)
         {
             var POS = player.ServerPosition.LSExtend(pos, Q.ChargedMaxRange);
             var direction = (POS.To2D() - player.ServerPosition.To2D()).Normalized();
@@ -431,7 +432,7 @@ namespace UnderratedAIO.Champions
             return poly;
         }
 
-        private void CastEHero(AIHeroClient target)
+        private static void CastEHero(AIHeroClient target)
         {
             if (E.CanCast(target))
             {
@@ -454,7 +455,7 @@ namespace UnderratedAIO.Champions
             }
         }
 
-        private void Game_OnDraw(EventArgs args)
+        private static void Game_OnDraw(EventArgs args)
         {
             DrawHelper.DrawCircle(getCheckBoxItem(menuD, "drawqq"), Q.Range, Color.FromArgb(180, 100, 146, 166));
             DrawHelper.DrawCircle(getCheckBoxItem(menuD, "drawww"), W.Range, Color.FromArgb(180, 100, 146, 166));
@@ -501,7 +502,7 @@ namespace UnderratedAIO.Champions
             return shield;
         }
 
-        private void Game_ProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        private static void Game_ProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.IsMe)
             {
@@ -547,7 +548,7 @@ namespace UnderratedAIO.Champions
             return m[item].Cast<ComboBox>().CurrentValue;
         }
 
-        private void InitMenu()
+        private static void InitMenu()
         {
             config = MainMenu.AddMenu("Sion ", "Sion");
 

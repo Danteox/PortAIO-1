@@ -818,7 +818,18 @@ namespace PortAIO
                         new UnderratedAIO.Champions.TahmKench();
                         break;
                     case "sion": // Underrated AIO
-                        new UnderratedAIO.Champions.Sion();
+                        switch (Loader.sion)
+                        {
+                            case 0:
+                                UnderratedAIO.Champions.Sion.Load();
+                                break;
+                            case 1:
+                                SimpleSion.Program.Game_OnGameLoad();
+                                break;
+                            default:
+                                UnderratedAIO.Champions.Sion.Load();
+                                break;
+                        }
                         break;
                     case "vi": //ElVi
                         ElVi.Vi.OnLoad();
