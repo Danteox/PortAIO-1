@@ -461,7 +461,7 @@ namespace ElRengarRevamped
 
                     if (RengarR)
                     {
-                        if (Player.Distance(target) <= MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange.Q")
+                        if (Player.Distance(target) <= MenuInit.getSliderItem(MenuInit.betaMenu, "Beta.searchrange.Q"))
 
                         {
                             Utility.DelayAction.Add(

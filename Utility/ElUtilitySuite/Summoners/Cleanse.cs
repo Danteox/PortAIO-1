@@ -176,7 +176,7 @@ namespace ElUtilitySuite.Summoners
                                  },*/
                              new CleanseSpell
                                  {
-                                     Champion = "FiddleSticks", Name = "fleeslow", MenuName = "Fiddle Fear", Evade = false,
+                                     Champion = "FiddleSticks", Name = "flee", MenuName = "Fiddle Fear", Evade = false,
                                      DoT = true, EvadeTimer = 0, Cleanse = true, CleanseTimer = 0, Slot = SpellSlot.Q,
                                      Interval = 1.0
                                  },
@@ -521,6 +521,11 @@ namespace ElUtilitySuite.Summoners
                                      Champion = "bard", Name = "bardqshackledebuff", MenuName = "Bard Stun", Evade = false,
                                      DoT = false, EvadeTimer = 0, Cleanse = true, CleanseTimer = 0,
                                      Slot = SpellSlot.Unknown
+                                 },
+                             new CleanseSpell
+                                 {
+                                     Champion = "viktor", Name = "ViktorGravitonStun", MenuName = "Viktor (W) stun", Evade = true,
+                                     DoT = false, EvadeTimer = 0, Cleanse = true, CleanseTimer = 0, Slot = SpellSlot.Q
                                  },
                              new CleanseSpell
                                  {
