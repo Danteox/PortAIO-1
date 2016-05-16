@@ -18,6 +18,7 @@ namespace NechritoRiven
         public static bool _forceR2;
         public static bool _forceItem;
         public static float _lastQ;
+        public static int laste;
         public static float _lastR;
         public static AttackableUnit _qtarget;
         public static int WRange => Program.Player.HasBuff("RivenFengShuiEngine")
