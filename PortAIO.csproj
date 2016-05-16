@@ -246,6 +246,7 @@
     <Compile Include="Dual-Port\NechritoTwitch\MenuConfig.cs" />
     <Compile Include="Dual-Port\NechritoTwitch\Program.cs" />
     <Compile Include="Dual-Port\NechritoTwitch\Spells.cs" />
+    <Compile Include="Dual-Port\NoobJax\Program.cs" />
     <Compile Include="Dual-Port\OKTWBlitzcrank\Blitzcrank.cs" />
     <Compile Include="Dual-Port\OKTWBrand\Brand.cs" />
     <Compile Include="Dual-Port\OKTWCorki\Corki.cs" />

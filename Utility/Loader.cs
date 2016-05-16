@@ -61,6 +61,7 @@ namespace PortAIO.Utility
         public static int jhin { get { return Miscc["jhin"].Cast<ComboBox>().CurrentValue; } }
         public static int kindred { get { return Miscc["kindred"].Cast<ComboBox>().CurrentValue; } }
         public static int sion { get { return Miscc["sion"].Cast<ComboBox>().CurrentValue; } }
+        public static int jax { get { return Miscc["jax"].Cast<ComboBox>().CurrentValue; } }
 
 
 
@@ -104,6 +105,7 @@ namespace PortAIO.Utility
             "Quinn", //27
             "Kayle", //28
             "Sion", //29
+            "Jax", //30
 
         });
 
@@ -234,6 +236,10 @@ namespace PortAIO.Utility
                 if (Player.ChampionName.Equals(Champion[29]))
                 {
                     Miscc.Add("Sion", new ComboBox("Use addon for Sion : ", 0, "Underrated Sion", "Simple Sion"));
+                }
+                if (Player.ChampionName.Equals(Champion[30]))
+                {
+                    Miscc.Add("Jax", new ComboBox("Use addon for Jax : ", 0, "xQx Jax", "Noob Jax Reloaded"));
                 }
             }
             else
