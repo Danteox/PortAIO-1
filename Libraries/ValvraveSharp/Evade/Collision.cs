@@ -5,7 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
+    using LeagueSharp.SDK.Polygons;
     using EloBuddy;
     using LeagueSharp;
     using LeagueSharp.SDK;
@@ -16,66 +16,22 @@
 
     #endregion
 
-    internal class FastPredResult
-    {
-        #region Fields
 
-        public Vector2 CurrentPos;
-
-        public bool IsMoving;
-
-        public Vector2 PredictedPos;
-
-        #endregion
-    }
-
-    internal class DetectedCollision
-    {
-        #region Fields
-
-        public float Diff;
-
-        public float Distance;
-
-        public Vector2 Position;
-
-        public CollisionableObjects Type;
-
-        public Obj_AI_Base Unit;
-
-        #endregion
-    }
 
     internal static class Collision
     {
         #region Static Fields
 
-        private static Vector2 wallCastedPos;
+        private static MissileClient yasuoWallLeft, yasuoWallRight;
 
-        private static int wallCastT;
+        private static RectanglePoly yasuoWallPoly;
+        private static int yasuoWallTime;
 
         #endregion
 
-        #region Public Methods and Operators
+        #region Methods
 
-        public static FastPredResult FastPrediction(Vector2 from, Obj_AI_Base unit, int delay, int speed)
-        {
-            var tDelay = delay / 1000f + (Math.Abs(speed - int.MaxValue) > 0 ? unit.Distance(@from) / speed : 0);
-            var d = tDelay * unit.MoveSpeed;
-            var path = unit.GetWaypoints();
-            if (path.PathLength() > d)
-            {
-                return new FastPredResult
-                           {
-                               IsMoving = true, CurrentPos = unit.ServerPosition.ToVector2(),
-                               PredictedPos = path.CutPath((int)d)[0]
-                           };
-            }
-            return new FastPredResult
-                       { IsMoving = false, CurrentPos = path[path.Count - 1], PredictedPos = path[path.Count - 1] };
-        }
-
-        public static Vector2 GetCollisionPoint(Skillshot skillshot)
+        internal static Vector2 GetCollisionPoint(Skillshot skillshot)
         {
             var collisions = new List<DetectedCollision>();
             var from = skillshot.GetMissilePosition(0);
@@ -87,7 +43,7 @@
                 minions.AddRange(
                     GameObjects.Minions.Where(
                         i =>
-                        i.IsValidTarget(1200, false, @from.ToVector3())
+                        i.IsValidTarget(1200, false, from.ToVector3())
                         && (skillshot.Unit.Team == Program.Player.Team
                                 ? i.Team != Program.Player.Team
                                 : i.Team == Program.Player.Team) && (i.IsMinion() || i.IsPet())));
@@ -109,9 +65,8 @@
                             {
                                 Position =
                                     pos.LSProjectOn(skillshot.End, skillshot.Start).LinePoint + skillshot.Direction * 30,
-                                Unit = minion, Type = CollisionableObjects.Minions, Distance = pos.Distance(@from),
-                                Diff = w
-                            });
+                            Distance = pos.Distance(@from)
+                        });
             }
             if (skillshot.SpellData.CollisionObjects.HasFlag(CollisionableObjects.Heroes))
             {
@@ -131,31 +86,20 @@
                             {
                                 Position =
                                     pos.LSProjectOn(skillshot.End, skillshot.Start).LinePoint + skillshot.Direction * 30,
-                                Unit = hero, Type = CollisionableObjects.Heroes, Distance = pos.Distance(@from),
-                                Diff = w
-                            });
+                            Distance = pos.Distance(@from)
+                        });
             }
-            if (skillshot.SpellData.CollisionObjects.HasFlag(CollisionableObjects.YasuoWall)
-                && GameObjects.AllyHeroes.Any(i => i.ChampionName == "Yasuo"))
+            if (skillshot.SpellData.CollisionObjects.HasFlag(CollisionableObjects.YasuoWall))
             {
-                var wall =
-                    GameObjects.AllGameObjects.FirstOrDefault(
-                        i => i.IsValid && Regex.IsMatch(i.Name, "_w_windwall.\\.troy", RegexOptions.IgnoreCase));
-                if (wall != null)
+                if (yasuoWallLeft != null && yasuoWallRight != null)
                 {
-                    var level = wall.Name.Substring(wall.Name.Length - 6, 1);
-                    var wallWidth = 300 + 50 * Convert.ToInt32(level);
-                    var wallPos = wall.Position.ToVector2();
-                    var wallDirection = (wallPos - wallCastedPos).LSNormalized().Perpendicular();
-                    var wallStart = wallPos + wallWidth / 2f * wallDirection;
-                    var wallEnd = wallStart - wallWidth * wallDirection;
-                    var wallPolygon = new Geometry.Rectangle(wallStart, wallEnd, 75).ToPolygon();
+                    yasuoWallPoly = new RectanglePoly(yasuoWallLeft.Position, yasuoWallRight.Position, 75);
                     var intersections = new List<Vector2>();
-                    for (var i = 0; i < wallPolygon.Points.Count; i++)
+                    for (var i = 0; i < yasuoWallPoly.Points.Count; i++)
                     {
                         var inter =
-                            wallPolygon.Points[i].Intersection(
-                                wallPolygon.Points[i != wallPolygon.Points.Count - 1 ? i + 1 : 0],
+                            yasuoWallPoly.Points[i].Intersection(
+                                yasuoWallPoly.Points[i != yasuoWallPoly.Points.Count - 1 ? i + 1 : 0],
                                 @from,
                                 skillshot.End);
                         if (inter.Intersects)
@@ -165,7 +109,7 @@
                     }
                     if (intersections.Count > 0)
                     {
-                        var intersection = intersections.OrderBy(item => item.Distance(@from)).ToList()[0];
+                        var intersection = intersections.OrderBy(item => item.Distance(from)).ToList()[0];
                         var collisionT = Variables.TickCount
                                          + Math.Max(
                                              0,
@@ -175,7 +119,7 @@
                                          * (Math.Abs(skillshot.SpellData.MissileSpeed - int.MaxValue) > 0
                                                 ? intersection.Distance(@from) / skillshot.SpellData.MissileSpeed
                                                 : 0);
-                        if (collisionT - wallCastT < 4000)
+                        if (collisionT - yasuoWallTime < 4000)
                         {
                             if (skillshot.SpellData.Type != SkillShotType.SkillshotMissileLine)
                             {
@@ -189,19 +133,86 @@
             return collisions.Count > 0 ? collisions.OrderBy(i => i.Distance).First().Position : new Vector2();
         }
 
-        public static void Init()
+        internal static void Init()
         {
-            Obj_AI_Base.OnProcessSpellCast += (sender, args) =>
+            GameObject.OnCreate += (sender, args) =>
+            {
+                var missile = sender as MissileClient;
+                var spellCaster = missile?.SpellCaster as AIHeroClient;
+
+                if (spellCaster == null || spellCaster.ChampionName != "Yasuo"
+                    || spellCaster.Team != GameObjects.Player.Team)
                 {
-                    if (!sender.LSIsValid() || sender.Team != Program.Player.Team || args.SData.Name != "YasuoWMovingWall")
-                    {
-                        return;
-                    }
-                    wallCastT = Variables.TickCount;
-                    wallCastedPos = sender.ServerPosition.ToVector2();
-                };
+                    return;
+                }
+
+                switch (missile.SData.Name)
+                {
+                    case "YasuoWMovingWallMisL":
+                        yasuoWallLeft = missile;
+                        break;
+                    case "YasuoWMovingWallMisR":
+                        yasuoWallRight = missile;
+                        break;
+                    case "YasuoWMovingWallMisVis":
+                        yasuoWallTime = Variables.TickCount;
+                        break;
+                }
+            };
+            GameObject.OnDelete += (sender, args) =>
+            {
+                var missile = sender as MissileClient;
+
+                if (missile == null)
+                {
+                    return;
+                }
+
+                if (missile.Compare(yasuoWallLeft))
+                {
+                    yasuoWallLeft = null;
+                }
+                else if (missile.Compare(yasuoWallRight))
+                {
+                    yasuoWallRight = null;
+                }
+            };
+        }
+
+        private static FastPredResult FastPrediction(Vector2 from, Obj_AI_Base unit, int delay, int speed)
+        {
+            var tDelay = delay / 1000f + (Math.Abs(speed - int.MaxValue) > 0 ? unit.Distance(from) / speed : 0);
+            var d = tDelay * unit.MoveSpeed;
+            var path = unit.GetWaypoints();
+            if (path.PathLength() > d)
+            {
+                return new FastPredResult { IsMoving = true, PredictedPos = path.CutPath((int)d)[0] };
+            }
+            return new FastPredResult { IsMoving = false, PredictedPos = path[path.Count - 1] };
         }
 
         #endregion
+
+        private class DetectedCollision
+        {
+            #region Fields
+
+            internal float Distance;
+
+            internal Vector2 Position;
+
+            #endregion
+        }
+
+        private class FastPredResult
+        {
+            #region Fields
+
+            internal bool IsMoving;
+
+            internal Vector2 PredictedPos;
+
+            #endregion
+        }
     }
 }

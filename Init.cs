@@ -101,6 +101,7 @@ namespace PortAIO
                     Humanizer.Program.Game_OnGameLoad();
                 }
 
+
                 if (Loader.gank)
                 {
                     UniversalGankAlerter.Program.Main();

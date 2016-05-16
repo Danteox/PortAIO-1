@@ -8,7 +8,7 @@
     using EloBuddy;
     using EloBuddy.SDK.Menu.Values;
     using EloBuddy.SDK.Menu;
-    public enum SpellValidTargets
+    internal enum SpellValidTargets
     {
         AllyMinions,
 
@@ -27,43 +27,43 @@
     {
         #region Fields
 
-        public string CheckBuffName = "";
+        internal string CheckBuffName = "";
 
-        public string CheckSpellName = "";
+        internal string CheckSpellName = "";
 
-        public int Delay;
+        internal int Delay;
 
-        public bool ExtraDelay;
+        internal bool ExtraDelay;
 
-        public bool FixedRange;
+        internal bool FixedRange;
 
-        public bool IsBlink;
+        internal bool IsBlink;
 
-        public bool IsDash;
+        internal bool IsDash;
 
-        public bool IsInvulnerability;
+        internal bool IsInvulnerability;
 
-        public bool IsMovementSpeedBuff;
+        internal bool IsMovementSpeedBuff;
 
-        public bool IsShield;
+        internal bool IsShield;
 
-        public bool IsSpellShield;
+        internal bool IsSpellShield;
 
-        public MoveSpeedAmount MoveSpeedTotalAmount;
+        internal MoveSpeedAmount MoveSpeedTotalAmount;
 
-        public string Name;
+        internal string Name;
 
-        public float Range;
+        internal float Range;
 
-        public bool SelfCast;
+        internal bool SelfCast;
 
-        public SpellSlot Slot;
+        internal SpellSlot Slot;
 
-        public int Speed;
+        internal int Speed;
 
-        public bool UnderTower;
+        internal bool UnderTower;
 
-        public SpellValidTargets[] ValidTargets;
+        internal SpellValidTargets[] ValidTargets;
 
         private int dangerLevel;
 
@@ -91,13 +91,13 @@
 
         #region Delegates
 
-        public delegate float MoveSpeedAmount();
+        internal delegate float MoveSpeedAmount();
 
         #endregion
 
         #region Public Properties
 
-        public int DangerLevel
+        internal int DangerLevel
         {
             get
             {
@@ -113,9 +113,9 @@
             }
         }
 
-        public bool Enable => getCheckBoxItem(this.Name + "Enabled");
+        internal bool Enable => getCheckBoxItem(this.Name + "Enabled");
 
-        public bool IsReady
+        internal bool IsReady
             =>
                 (this.CheckSpellName == ""
                  || Program.Player.Spellbook.GetSpell(this.Slot).SData.Name.ToLower() == this.CheckSpellName)

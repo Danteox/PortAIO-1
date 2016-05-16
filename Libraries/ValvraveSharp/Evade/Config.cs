@@ -16,29 +16,29 @@
     {
         #region Constants
 
-        public const int DiagonalEvadePointsCount = 7;
+        internal const int DiagonalEvadePointsCount = 7;
 
-        public const int DiagonalEvadePointsStep = 20;
+        internal const int DiagonalEvadePointsStep = 20;
 
-        public const int EvadingFirstTimeOffset = 250;
+        internal const int EvadingFirstTimeOffset = 250;
 
-        public const int EvadingSecondTimeOffset = 80;
+        internal const int EvadingSecondTimeOffset = 80;
 
-        public const int ExtraEvadeDistance = 15;
+        internal const int ExtraEvadeDistance = 15;
 
-        public const int GridSize = 10;
+        internal const int GridSize = 10;
 
-        public const int SkillShotsExtraRadius = 9;
+        internal const int SkillShotsExtraRadius = 9;
 
-        public const int SkillShotsExtraRange = 20;
+        internal const int SkillShotsExtraRange = 20;
 
         #endregion
 
         public static Menu evadeMenu;
 
-        #region Public Methods and Operators
+        #regio Methods
 
-        public static void CreateMenu(Menu mainMenu)
+        internal static void CreateMenu(Menu mainMenu)
         {
             evadeMenu = mainMenu.AddSubMenu("Evade", "Evade Skillshot");
 

@@ -23,9 +23,26 @@
 
         #endregion
 
-        #region Constructors and Destructors
 
-        static SkillshotDetector()
+        #region Delegates
+
+        internal delegate void OnDeleteSkillshotH(Skillshot skillshot, MissileClient missile);
+
+        internal delegate void OnDetectSkillshotH(Skillshot skillshot);
+
+        #endregion
+
+        #region Events
+
+        internal static event OnDeleteSkillshotH OnDeleteSkillshot;
+
+        internal static event OnDetectSkillshotH OnDetectSkillshot;
+
+        #endregion
+
+        #region Methods
+
+        internal static void Init()
         {
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             GameObject.OnCreate += (sender, args) => { DelayAction.Add(0, () => MissileOnCreate(sender)); };
@@ -102,25 +119,7 @@
                 };
         }
 
-        #endregion
-
-        #region Delegates
-
-        public delegate void OnDeleteSkillshotH(Skillshot skillshot, MissileClient missile);
-
-        public delegate void OnDetectSkillshotH(Skillshot skillshot);
-
-        #endregion
-
-        #region Public Events
-
-        public static event OnDeleteSkillshotH OnDeleteSkillshot;
-
-        public static event OnDetectSkillshotH OnDetectSkillshot;
-
-        #endregion
-
-        #region Methods
+ 
 
         private static void MissileOnCreate(GameObject sender)
         {
@@ -155,15 +154,7 @@
             }
             var castTime = Variables.TickCount - Game.Ping / 2 - (spellData.MissileDelayed ? 0 : spellData.Delay)
                            - (int)(1000f * missilePosition.Distance(unitPosition) / spellData.MissileSpeed);
-            TriggerOnDetectSkillshot(
-                DetectionType.RecvPacket,
-                spellData,
-                castTime,
-                unitPosition,
-                endPos,
-                endPos,
-                unit,
-                missile);
+            TriggerOnDetectSkillshot(DetectionType.RecvPacket, spellData, castTime, unitPosition, endPos, endPos, unit);
         }
 
         private static void MissileOnDelete(GameObject sender, EventArgs args)
@@ -282,10 +273,10 @@
             Vector2 start,
             Vector2 end,
             Vector2 originalEnd,
-            Obj_AI_Base unit,
-            MissileClient missile = null)
+            Obj_AI_Base unit)
         {
-            OnDetectSkillshot?.Invoke(new Skillshot(detectionType, spellData, startT, start, end, unit, missile) { OriginalEnd = originalEnd });
+            OnDetectSkillshot?.Invoke(
+                new Skillshot(detectionType, spellData, startT, start, end, unit) { OriginalEnd = originalEnd });
         }
 
         #endregion

@@ -17,11 +17,11 @@ namespace Valvrave_Sharp.Evade
     using EloBuddy;
     using EloBuddy.SDK.Menu.Values;
     using EloBuddy.SDK.Menu;
-    public static class Evader
+    internal static class Evader
     {
         #region Public Methods and Operators
 
-        public static List<Vector2> GetEvadePoints(
+        internal static List<Vector2> GetEvadePoints(
             int speed = -1,
             int delay = 0,
             bool isBlink = false,
@@ -34,7 +34,7 @@ namespace Valvrave_Sharp.Evade
             var takeClosestPath = false;
             foreach (var skillshot in Evade.DetectedSkillshots.Where(i => i.Enable))
             {
-                if (skillshot.SpellData.TakeClosestPath && skillshot.IsDanger(Evade.PlayerPosition))
+                if (skillshot.SpellData.TakeClosestPath && !skillshot.IsSafe(Evade.PlayerPosition))
                 {
                     takeClosestPath = true;
                 }
@@ -111,9 +111,6 @@ namespace Valvrave_Sharp.Evade
             return goodCandidates.Count > 0 ? goodCandidates : (onlyGood ? new List<Vector2>() : badCandidates);
         }
 
-        #endregion
-
-        #region Methods
 
         public static bool getCheckBoxItem(string item)
         {
