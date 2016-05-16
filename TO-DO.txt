@@ -1,0 +1,38 @@
+﻿To-Do :
+- Fix the Lee Sin Crash
+
+- Bard Flee [Don't have Bard so can't fix]
+- Tahm Kench Crash [Don't have TK]
+
+------------------------------------------------------------------------
+
+Port [Will Port One at a time when I'm bored or there's nothing on the to-do] :
+- OKTW TF/Kayle
+- SkyLv Tristana/AurelionSol (These are harder because the menu is so damn large)
+- NoobJaxReloaded
+- Corki/Graves Diabath
+- BadaoKingdom Poppy/GP
+- STahmKench
+- DRengar/Elise/J4
+- ExorAnivia/Ashe/Mundo/Graves/Jax/Jhin/Jax/Quinn/Sivir
+- Kurisu's Blitzcrank
+- FreshBooster Braum & LeBlanc
+- Nocturne is Back https://github.com/xQxCPMxQx/LeagueSharp2/tree/master/Nocturne
+- Kurisu Riven
+- Chewymoon Shaco
+- SimpleSion
+- ElEasy Sona
+- GosuMechanics Yasuo
+- Universal Leveler or Auto Level Up
+- Sebby Ban Wars
+- Auto Buy
+- DZAwareness
+- Zed is Back
+- Swiftly Teemo
+- ElEasy Ryze
+- Fast Trundle
+- Snitched 3.0
+- https://www.reddit.com/r/summonerschool/comments/4ihcsf/ryze_combo_69/
+- RAREKarthus
+- Karma by Esk0r
+- LeBlanc xQx
