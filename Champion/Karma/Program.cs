@@ -6,10 +6,10 @@ using System.Drawing;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu;
-using EloBuddy.SDK.Menu.Values;
 using LeagueSharp.Common;
 using Spell = LeagueSharp.Common.Spell;
+using EloBuddy.SDK.Menu;
+using EloBuddy.SDK.Menu.Values;
 
 #endregion
 
@@ -26,31 +26,13 @@ namespace Karma
         private static Spell _e;
         private static Spell _r;
 
-        private static Menu _config, comboMenu, harassMenu, miscMenu, drawMenu;
+        public static Menu Menu;
+
+        public static Menu comboMenu, harassMenu, laneclearMenu, jungleStealMenu, miscMenu, drawingMenu;
 
         private static bool MantraIsActive
         {
             get { return ObjectManager.Player.HasBuff("KarmaMantra"); }
-        }
-
-        public static bool getCheckBoxItem(Menu m, string item)
-        {
-            return m[item].Cast<CheckBox>().CurrentValue;
-        }
-
-        public static int getSliderItem(Menu m, string item)
-        {
-            return m[item].Cast<Slider>().CurrentValue;
-        }
-
-        public static bool getKeyBindItem(Menu m, string item)
-        {
-            return m[item].Cast<KeyBind>().CurrentValue;
-        }
-
-        public static int getBoxItem(Menu m, string item)
-        {
-            return m[item].Cast<ComboBox>().CurrentValue;
         }
 
         public static void Game_OnGameLoad()
@@ -74,26 +56,27 @@ namespace Karma
             SpellList.Add(_e);
             SpellList.Add(_r);
 
-            _config = MainMenu.AddMenu(ChampionName, ChampionName);
+            Menu = MainMenu.AddMenu("Esk0r Karma", "Karma");
 
-            comboMenu = _config.AddSubMenu("Combo", "Combo");
+            comboMenu = Menu.AddSubMenu("Combo", "Combo");
             comboMenu.Add("UseQCombo", new CheckBox("Use Q"));
             comboMenu.Add("UseWCombo", new CheckBox("Use W"));
             comboMenu.Add("UseRCombo", new CheckBox("Use R"));
 
-            harassMenu = _config.AddSubMenu("Harass", "Harass");
+            harassMenu = Menu.AddSubMenu("Harass", "Harass");
             harassMenu.Add("UseQHarass", new CheckBox("Use Q"));
             harassMenu.Add("UseWHarass", new CheckBox("Use W", false));
             harassMenu.Add("UseRHarass", new CheckBox("Use R"));
 
-            miscMenu = _config.AddSubMenu("Misc", "Misc");
+            miscMenu = Menu.AddSubMenu("Misc", "Misc");
             miscMenu.Add("UseEDefense", new CheckBox("Use E For Defense"));
 
-            drawMenu = _config.AddSubMenu("Drawings", "Drawings");
-            drawMenu.Add("QRange", new CheckBox("Q Range"));
-            drawMenu.Add("WRange", new CheckBox("W Range"));
-            drawMenu.Add("WRootRange", new CheckBox("W Root Range"));
-            drawMenu.Add("ERange", new CheckBox("E Range"));
+            drawingMenu = Menu.AddSubMenu("Drawings", "Drawings");
+            drawingMenu.Add("QRange", new CheckBox("Q Range"));
+            drawingMenu.Add("WRange", new CheckBox("W Range"));
+            drawingMenu.Add("WRootRange", new CheckBox("W Root Range"));
+            drawingMenu.Add("ERange", new CheckBox("E Range"));
+
 
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Drawing.OnDraw += Drawing_OnDraw;
@@ -101,8 +84,29 @@ namespace Karma
             Interrupter2.OnInterruptableTarget += Interrupter2_OnInterruptableTarget;
         }
 
-        private static void Interrupter2_OnInterruptableTarget(AIHeroClient sender,
-            Interrupter2.InterruptableTargetEventArgs args)
+
+        public static bool getCheckBoxItem(Menu m, string item)
+        {
+            return m[item].Cast<CheckBox>().CurrentValue;
+        }
+
+        public static int getSliderItem(Menu m, string item)
+        {
+            return m[item].Cast<Slider>().CurrentValue;
+        }
+
+        public static bool getKeyBindItem(Menu m, string item)
+        {
+            return m[item].Cast<KeyBind>().CurrentValue;
+        }
+
+        public static int getBoxItem(Menu m, string item)
+        {
+            return m[item].Cast<ComboBox>().CurrentValue;
+        }
+
+
+        static void Interrupter2_OnInterruptableTarget(AIHeroClient sender, Interrupter2.InterruptableTargetEventArgs args)
         {
             if (sender.IsValidTarget(1000f) && args.DangerLevel == Interrupter2.DangerLevel.High && _e.IsReady())
             {
@@ -126,25 +130,27 @@ namespace Karma
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            var menuItem = getCheckBoxItem(drawMenu, "WRootRange");
+            var menuItem = getCheckBoxItem(drawingMenu, "WRootRange");
             if (menuItem)
             {
-                foreach (
-                    var enemy in
-                        ObjectManager.Get<AIHeroClient>().Where(h => h.IsValidTarget() && h.HasBuff("KarmaSpiritBind")))
+                foreach (var enemy in
+                    ObjectManager.Get<AIHeroClient>().Where(h => h.IsValidTarget() && h.HasBuff("KarmaSpiritBind")))
                 {
-                    var distance = 1 - Math.Min(Math.Max(850 - ObjectManager.Player.LSDistance(enemy), 0), 450)/450;
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, 850,
-                        Color.FromArgb((int) (50*distance), Color.MintCream), -420, true);
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, 850,
-                        Color.FromArgb((int) (255*distance), Color.MintCream), 10);
+                    var distance = (1 - Math.Min(Math.Max(850 - ObjectManager.Player.Distance(enemy), 0), 450) / 450);
+
+                    Render.Circle.DrawCircle(
+                        ObjectManager.Player.Position, 850, Color.FromArgb((int)(50 * distance), Color.Red), -420,
+                        true);
+                    Render.Circle.DrawCircle(
+                    ObjectManager.Player.Position, 850, Color.FromArgb((int)(255 * distance), Color.Red), 10);
+
                     break;
                 }
             }
 
             foreach (var spell in SpellList)
             {
-                menuItem = getCheckBoxItem(drawMenu, spell.Slot + "Range");
+                menuItem = getCheckBoxItem(drawingMenu, spell.Slot + "Range");
                 if (menuItem)
                 {
                     Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range,
@@ -159,14 +165,13 @@ namespace Karma
             _q.Range = MantraIsActive ? 1250f : 1050f;
             if (getCheckBoxItem(miscMenu, "UseEDefense"))
             {
-                foreach (
-                    var hero in
-                        ObjectManager.Get<AIHeroClient>()
-                            .Where(
-                                hero =>
-                                    hero.IsValidTarget(_e.Range) && hero.IsAlly &&
-                                    ObjectManager.Get<AIHeroClient>()
-                                        .Count(h => h.IsValidTarget() && h.LSDistance(hero) < 400) > 1))
+                foreach (var hero in
+                    ObjectManager.Get<AIHeroClient>()
+                        .Where(
+                            hero =>
+                                hero.IsValidTarget(_e.Range, false) && hero.IsAlly &&
+                                ObjectManager.Get<AIHeroClient>().Count(h => h.IsValidTarget() && h.Distance(hero) < 400) >
+                                1))
                 {
                     _e.Cast(hero);
                 }
@@ -177,6 +182,7 @@ namespace Karma
             {
                 return;
             }
+
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) &&
                 ObjectManager.Player.Mana -
@@ -205,8 +211,8 @@ namespace Karma
 
             if (wActive && wTarget != null && _w.IsReady())
             {
-                if (ObjectManager.Player.Health/ObjectManager.Player.MaxHealth/
-                    (qTarget.Health/qTarget.MaxHealth) < 1)
+                if ((ObjectManager.Player.Health / ObjectManager.Player.MaxHealth) /
+                    (qTarget.Health / qTarget.MaxHealth) < 1)
                 {
                     if (rActive)
                     {
@@ -232,19 +238,19 @@ namespace Karma
                     var qPrediction = _q.GetPrediction(qTarget);
                     if (qPrediction.Hitchance >= HitChance.High)
                     {
-                        _q.Cast(qTarget);
+                        _q.Cast(qPrediction.CastPosition);
                     }
                     else if (qPrediction.Hitchance == HitChance.Collision)
                     {
                         var minionsHit = qPrediction.CollisionObjects;
                         var closest =
                             minionsHit.Where(m => m.NetworkId != ObjectManager.Player.NetworkId)
-                                .OrderBy(m => m.LSDistance(ObjectManager.Player))
+                                .OrderBy(m => m.Distance(ObjectManager.Player))
                                 .FirstOrDefault();
 
-                        if (closest != null && closest.LSDistance(qPrediction.UnitPosition) < 200)
+                        if (closest != null && closest.Distance(qPrediction.UnitPosition) < 200)
                         {
-                            _q.Cast(qTarget);
+                            _q.Cast(qPrediction.CastPosition);
                         }
                     }
                 }
