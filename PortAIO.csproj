@@ -193,6 +193,11 @@
     <Compile Include="Champion\FiddleSticks\Core\Spells.cs" />
     <Compile Include="Champion\FiddleSticks\Programs.cs" />
     <Compile Include="Dual-Port\e.MotionKatarina\Program.cs" />
+    <Compile Include="Dual-Port\ElEkko\DrawDamage.cs" />
+    <Compile Include="Dual-Port\ElEkko\Drawings.cs" />
+    <Compile Include="Dual-Port\ElEkko\ElEkko.cs" />
+    <Compile Include="Dual-Port\ElEkko\ElEkkoMenu.cs" />
+    <Compile Include="Dual-Port\ElEkko\Program.cs" />
     <Compile Include="Dual-Port\ElRyze\Program.cs" />
     <Compile Include="Dual-Port\ElSona\Program.cs" />
     <Compile Include="Dual-Port\ElXerath\Drawings.cs" />
@@ -1105,7 +1110,6 @@
     <None Include="Resources\RecallBar.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Dual-Port\ElEkko\" />
     <Folder Include="Libraries\ValvraveSharp\Plugin\" />
   </ItemGroup>
   <ItemGroup>
