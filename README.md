@@ -1,4 +1,4 @@
-# Berb's departue
+# Berb's departure
 #####
 As you guys know Berb has left the project for personal reasons.. who knows if he will comeback but I will do my best to update the project
 with help of others. Thanks.
