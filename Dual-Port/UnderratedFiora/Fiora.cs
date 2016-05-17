@@ -112,13 +112,15 @@ namespace UnderratedAIO.Champions
             }
 
             var data = IncDamages.GetAllyData(player.NetworkId);
-            if (data != null && W.IsReady())
+            if (data != null && W.IsReady() && getCheckBoxItem(miscSettings, "autoW") && getSliderItem(miscSettings, "minmanaP") < player.ManaPercent)
             {
                 var enemy = TargetSelector.GetTarget(W.Range, DamageType.Physical);
-                if ((getCheckBoxItem(comboMenu, "usew") &&
-                     Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && enemy != null &&
-                     data.DamageTaken >= enemy.GetAutoAttackDamage(player) - 5) ||
-                    (getCheckBoxItem(comboMenu, "usewDangerous") && data.DamageTaken > player.Health*0.1f))
+                if (enemy != null && data.ProjectileDamageTaken >= enemy.GetAutoAttackDamage(player) - 5)
+
+                {
+                    W.Cast(enemy, getCheckBoxItem(config, "packets"));
+                }
+
                 {
                     var bestPositionW =
                         W.GetLineFarmLocation(MinionManager.GetMinions(ObjectManager.Player.ServerPosition, W.Range,
@@ -237,7 +239,6 @@ namespace UnderratedAIO.Champions
             var data = IncDamages.GetAllyData(player.NetworkId);
             if (getCheckBoxItem(comboMenu, "usewCC") && W.IsReady() && data.AnyCC)
             {
-                Console.WriteLine("asdafwfq");
                 W.Cast(target.Position, getCheckBoxItem(config, "packets"));
             }
 
@@ -278,10 +279,16 @@ namespace UnderratedAIO.Champions
                 }
             }
 
-            if (getCheckBoxItem(comboMenu, "usew") && W.IsReady() && target.LSDistance(player) > 350f &&
-                W.GetDamage(target) > target.Health)
+            if (W.IsReady() && getCheckBoxItem(comboMenu, "usew"))
             {
-                W.CastIfHitchanceEquals(target, HitChance.High, getCheckBoxItem(config, "packets"));
+                var killable = (target.Distance(player) > 350f && W.GetDamage(target) > target.Health);
+                var incAA = data.ProjectileDamageTaken >= target.GetAutoAttackDamage(player) - 5;
+                var dangerous = incAA && data.DamageTaken >= player.Health * 0.4f;
+                if (killable || (incAA && !getCheckBoxItem(comboMenu, "usewDangerous")) ||
+                    (getCheckBoxItem(comboMenu, "usewDangerous") && dangerous))
+                {
+                    W.CastIfHitchanceEquals(target, HitChance.Low, getCheckBoxItem(config, "packets"));
+                }
             }
 
             if (getCheckBoxItem(comboMenu, "useIgnite") && hasIgnite && ComboDamage(target) > target.Health &&

@@ -727,7 +727,7 @@
                 {
                     if (drawText && this.SmiteSpell != null)
                     {
-                        Drawing.DrawText(playerPos.X - 70, playerPos.Y + 40, Color.Red, "Smite not active");
+                        Drawing.DrawText(playerPos.X - 70, playerPos.Y + 40, Color.Red, "Smite not active!");
                     }
                 }
 

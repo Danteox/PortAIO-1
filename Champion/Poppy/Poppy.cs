@@ -182,10 +182,11 @@ namespace UnderratedAIO.Champions
             {
                 player.Spellbook.CastSpell(player.GetSpellSlot("SummonerDot"), target);
             }
-            if (getCheckBoxItem(menuC, "userindanger") && R.IsReady() && player.CountEnemiesInRange(800) >= 2 &&
-                player.CountEnemiesInRange(800) > player.CountAlliesInRange(1500) + 1 && player.HealthPercent < 60 ||
-                (player.Health < target.Health && player.HealthPercent < 40 &&
-                 player.CountAlliesInRange(1000) + 1 < player.CountEnemiesInRange(1000)))
+            if (getCheckBoxItem(menuC, "userindanger") && R.IsReady() &&
+                ((player.CountEnemiesInRange(800) >= 2 &&
+                  player.CountEnemiesInRange(800) > player.CountAlliesInRange(1500) + 1 && player.HealthPercent < 60) ||
+                 (player.Health < target.Health && player.HealthPercent < 40 &&
+                  player.CountAlliesInRange(1000) + 1 < player.CountEnemiesInRange(1000))))
             {
                 var targ =
                     HeroManager.Enemies.Where(

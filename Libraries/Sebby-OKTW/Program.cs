@@ -355,8 +355,8 @@ namespace SebbyLib
 
                 if (QWER.Type == SkillshotType.SkillshotCircle)
                 {
-                    CoreType2 = SebbyLib.Movement.SkillshotType.SkillshotCircle;
-                    aoe2 = true;
+                 //   CoreType2 = SebbyLib.Movement.SkillshotType.SkillshotCircle;
+                  //  aoe2 = true;
                 }
 
                 if (QWER.Width > 80 && !QWER.Collision)

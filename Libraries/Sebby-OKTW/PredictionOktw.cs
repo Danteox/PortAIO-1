@@ -307,12 +307,6 @@ namespace SebbyLib.Prediction
                 }
             }
 
-            //Set hit chance
-            if (result.Hitchance == HitChance.High)
-            {
-                result = WayPointAnalysis(result, input);
-                //.debug(input.Unit.BaseSkinName + result.Hitchance);
-            }
 
             //Check for collision
             if (checkCollision && input.Collision && result.Hitchance > HitChance.Impossible)
@@ -322,17 +316,48 @@ namespace SebbyLib.Prediction
                 if (Collision.GetCollision(positions, input))
                     result.Hitchance = HitChance.Collision;
             }
+
+            //Set hit chance
+            if (result.Hitchance == HitChance.High || result.Hitchance == HitChance.VeryHigh)
+            {
+
+                result = WayPointAnalysis(result, input);
+                //.debug(input.Unit.BaseSkinName + result.Hitchance);
+
+            }
+
+            if (result.Hitchance >= HitChance.VeryHigh && input.Unit is AIHeroClient && input.Radius > 1)
+            {
+
+                var lastWaypiont = input.Unit.GetWaypoints().Last().To3D();
+                var distanceUnitToWaypoint = lastWaypiont.LSDistance(input.Unit.ServerPosition);
+                var distanceFromToUnit = input.From.LSDistance(input.Unit.ServerPosition);
+                var distanceFromToWaypoint = lastWaypiont.LSDistance(input.From);
+                float speedDelay = distanceFromToUnit / input.Speed;
+
+                if (Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
+                    speedDelay = 0;
+
+                float totalDelay = speedDelay + input.Delay;
+                float moveArea = input.Unit.MoveSpeed * totalDelay;
+                float fixRange = moveArea * 0.35f;
+                float pathMinLen = 800 + moveArea;
+
+               OktwCommon.debug(input.Radius+ " RES Ways: " + input.Unit.GetWaypoints().Count  + " DIS " + distanceUnitToWaypoint + " TIME " + UnitTracker.GetLastNewPathTime(input.Unit));
+            }
+
             return result;
         }
 
         internal static PredictionOutput WayPointAnalysis(PredictionOutput result, PredictionInput input)
         {
-            if (!input.Unit.IsValid<AIHeroClient>() || input.Radius == 1)
+            if (!(input.Unit is AIHeroClient) || input.Radius == 1)
             {
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
 
+            OktwCommon.debug("DUPA");
             // CAN'T MOVE SPELLS ///////////////////////////////////////////////////////////////////////////////////
 
             if (UnitTracker.GetSpecialSpellEndTime(input.Unit) > 100 || input.Unit.HasBuff("Recall") || (UnitTracker.GetLastStopMoveTime(input.Unit) < 100 && input.Unit.IsRooted))
@@ -356,10 +381,14 @@ namespace SebbyLib.Prediction
 
             result.Hitchance = HitChance.Medium;
             var lastWaypiont = input.Unit.GetWaypoints().Last().To3D();
+
             var distanceUnitToWaypoint = lastWaypiont.LSDistance(input.Unit.ServerPosition);
             var distanceFromToUnit = input.From.LSDistance(input.Unit.ServerPosition);
             var distanceFromToWaypoint = lastWaypiont.LSDistance(input.From);
-            var getAngle = GetAngle(input.From, input.Unit);
+            Vector2 pos1 = lastWaypiont.LSTo2D() - input.Unit.Position.LSTo2D();
+            Vector2 pos2 = input.From.LSTo2D() - input.Unit.Position.LSTo2D();
+
+            var getAngle = pos1.LSAngleBetween(pos2);;
             float speedDelay = distanceFromToUnit / input.Speed;
 
             if (Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
@@ -369,8 +398,6 @@ namespace SebbyLib.Prediction
             float moveArea = input.Unit.MoveSpeed * totalDelay;
             float fixRange = moveArea * 0.35f;
             float pathMinLen = 800 + moveArea;
-
-            double angleMove = 32;
 
             if (input.Type == SkillshotType.SkillshotCircle)
             {
@@ -403,14 +430,10 @@ namespace SebbyLib.Prediction
                 if (runOutWall)
                 {
                     OktwCommon.debug("PRED: RUN OUT WALL");
-                    result.Hitchance = HitChance.VeryHigh;
+                    result.Hitchance = HitChance.High;
                     return result;
                 }
-            }
-
-            if (input.Unit.GetWaypoints().Count == 1)
-            {
-                if (UnitTracker.GetLastStopMoveTime(input.Unit) < 600)
+                else if (UnitTracker.GetLastStopMoveTime(input.Unit) < 800)
                 {
                     //OktwCommon.debug("PRED: STOP HIGH");
                     result.Hitchance = HitChance.High;
@@ -462,6 +485,16 @@ namespace SebbyLib.Prediction
                 return result;
             }
 
+            
+            // SHORT CLICK DETECTION ///////////////////////////////////////////////////////////////////////////////////
+
+            if (distanceUnitToWaypoint > 0 && distanceUnitToWaypoint < 50)
+            {
+                OktwCommon.debug("PRED: SHORT CLICK DETECTION");
+                result.Hitchance = HitChance.Medium;
+                return result;
+            }
+
             // LOW HP DETECTION ///////////////////////////////////////////////////////////////////////////////////
 
             if (input.Unit.HealthPercent < 20 || ObjectManager.Player.HealthPercent < 20)
@@ -472,9 +505,9 @@ namespace SebbyLib.Prediction
 
             // RUN IN LANE DETECTION /////////////////////////////////////////////////////////////////////////////////// 
 
-            if (getAngle < angleMove && UnitTracker.GetLastNewPathTime(input.Unit) < 100)
+            if ((getAngle < 20 || getAngle > 160) && input.Unit.IsMoving)
             {
-                OktwCommon.debug(GetAngle(input.From, input.Unit) + " PRED: ANGLE " + angleMove + " DIS " + distanceUnitToWaypoint);
+                OktwCommon.debug("PRED: ANGLE " + getAngle );
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
@@ -488,6 +521,29 @@ namespace SebbyLib.Prediction
                     OktwCommon.debug("PRED: CIRCLE NEW PATH");
                     result.Hitchance = HitChance.VeryHigh;
                     return result;
+                }
+            }
+            if (distanceUnitToWaypoint > 0)
+            {
+                var points1 = OktwCommon.CirclePoints(15, 450, input.Unit.Position).Where(x => x.LSIsWall());
+
+                if (points1.Count() > 2)
+                {
+                    var runOutWall = true;
+                    foreach (var point in points1)
+                    {
+                        if (input.Unit.Position.LSDistance(point) > lastWaypiont.LSDistance(point))
+                        {
+                            Render.Circle.DrawCircle(point, 50, System.Drawing.Color.Orange, 1);
+                            runOutWall = false;
+                        }
+                    }
+                    if (runOutWall)
+                    {
+                        OktwCommon.debug("PRED: RUN OUT WALL");
+                        result.Hitchance = HitChance.VeryHigh;
+                        return result;
+                    }
                 }
             }
             //Program.debug("PRED: NO DETECTION");
@@ -558,25 +614,6 @@ namespace SebbyLib.Prediction
                 Hitchance = HitChance.High
                 /*timeToReachTargetPosition - remainingImmobileT + input.RealRadius / input.Unit.MoveSpeed < 0.4d ? HitChance.High : HitChance.Medium*/
             };
-        }
-
-
-
-        internal static double GetAngle(Vector3 from, Obj_AI_Base target)
-        {
-            var C = target.ServerPosition.LSTo2D();
-            var A = target.GetWaypoints().Last();
-
-            if (C == A)
-                return 60;
-
-            var B = from.LSTo2D();
-
-            var AB = Math.Pow(A.X - B.X, 2) + Math.Pow(A.Y - B.Y, 2);
-            var BC = Math.Pow(B.X - C.X, 2) + Math.Pow(B.Y - C.Y, 2);
-            var AC = Math.Pow(A.X - C.X, 2) + Math.Pow(A.Y - C.Y, 2);
-
-            return Math.Cos((AB + BC - AC) / (2 * Math.Sqrt(AB) * Math.Sqrt(BC))) * 180 / Math.PI;
         }
 
         internal static double UnitIsImmobileUntil(Obj_AI_Base unit)
@@ -1049,8 +1086,6 @@ namespace SebbyLib.Prediction
                         case CollisionableObjects.Minions:
                             foreach (var minion in Cache.GetMinions(input.From, Math.Min(input.Range + input.Radius + 100, 2000)))
                             {
-                                input.Unit = minion;
-
                                 var distanceFromToUnit = minion.ServerPosition.LSDistance(input.From);
 
                                 if (distanceFromToUnit < input.Radius + minion.BoundingRadius)
@@ -1073,7 +1108,18 @@ namespace SebbyLib.Prediction
                                     int bonusRadius = 20;
                                     if (minion.IsMoving)
                                     {
-                                        minionPos = Prediction.GetPrediction(input, false, false).CastPosition;
+                                        var predInput2 = new PredictionInput
+                                        {
+                                            Collision = false,
+                                            Speed = input.Speed,
+                                            Delay = input.Delay,
+                                            Range = input.Range,
+                                            From = input.From,
+                                            Radius = input.Radius,
+                                            Unit = minion,
+                                            Type = input.Type
+                                        };
+                                        minionPos = Prediction.GetPrediction(predInput2).CastPosition;
                                         bonusRadius = 60 + (int)input.Radius;
                                     }
 
@@ -1203,8 +1249,9 @@ namespace SebbyLib.Prediction
         {
             if (sender is AIHeroClient)
             {
+                var item = UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId);
                 if (args.Path.Count() == 1) // STOP MOVE DETECTION
-                    UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).StopMoveTick = Utils.TickCount;
+                    item.StopMoveTick = Utils.TickCount;
                 else
                 {
                     UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).NewPathTick = Utils.TickCount;

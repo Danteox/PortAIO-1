@@ -51,21 +51,21 @@ namespace UnderratedAIO.Helpers
                     new DashData("Illaoi", SpellSlot.W), new DashData("Irelia", SpellSlot.Q),
                     new DashData("JarvanIV", SpellSlot.Q), new DashData("JarvanIV", SpellSlot.E),
                     new DashData("Jax", SpellSlot.Q), new DashData("Jayce", SpellSlot.Q),
-                    new DashData("Kalista", SpellSlot.Unknown), new DashData("KhaZix", SpellSlot.E),
+                    new DashData("Kalista", SpellSlot.Unknown), new DashData("Khazix", SpellSlot.E),
                     new DashData("Kindred", SpellSlot.Q), new DashData("LeBlanc", SpellSlot.E),
                     new DashData("Jax", SpellSlot.Q), new DashData("LeeSin", SpellSlot.Q),
                     new DashData("LeeSin", SpellSlot.W), new DashData("Lucian", SpellSlot.E),
-                    new DashData("Nautilus", SpellSlot.Q), new DashData("Nidalee", SpellSlot.W),
-                    new DashData("Pantheon", SpellSlot.W), new DashData("Poppy", SpellSlot.E),
-                    new DashData("Quinn", SpellSlot.E), new DashData("Renekton", SpellSlot.E),
-                    new DashData("Rengar", SpellSlot.Unknown), new DashData("Riven", SpellSlot.Q),
-                    new DashData("Riven", SpellSlot.E), new DashData("Quinn", SpellSlot.E),
-                    new DashData("Sejuani", SpellSlot.Q), new DashData("Shyvana", SpellSlot.R),
-                    new DashData("Shen", SpellSlot.E), new DashData("Thresh", SpellSlot.Q),
-                    new DashData("Tristana", SpellSlot.W), new DashData("Tryndamere", SpellSlot.E),
-                    new DashData("Vi", SpellSlot.Q), new DashData("Wukong", SpellSlot.E),
-                    new DashData("XinZhao", SpellSlot.E), new DashData("Yasuo", SpellSlot.E),
-                    new DashData("Zac", SpellSlot.E), new DashData("Ziggs", SpellSlot.W)
+                    new DashData("MonkeyKing", SpellSlot.E), new DashData("Nautilus", SpellSlot.Q),
+                    new DashData("Nidalee", SpellSlot.W), new DashData("Pantheon", SpellSlot.W),
+                    new DashData("Poppy", SpellSlot.E), new DashData("Quinn", SpellSlot.E),
+                    new DashData("Renekton", SpellSlot.E), new DashData("Rengar", SpellSlot.Unknown),
+                    new DashData("Riven", SpellSlot.Q), new DashData("Riven", SpellSlot.E),
+                    new DashData("Quinn", SpellSlot.E), new DashData("Sejuani", SpellSlot.Q),
+                    new DashData("Shyvana", SpellSlot.R), new DashData("Shen", SpellSlot.E),
+                    new DashData("Thresh", SpellSlot.Q), new DashData("Tristana", SpellSlot.W),
+                    new DashData("Tryndamere", SpellSlot.E), new DashData("Vi", SpellSlot.Q),
+                    new DashData("Wukong", SpellSlot.E), new DashData("XinZhao", SpellSlot.E),
+                    new DashData("Yasuo", SpellSlot.E), new DashData("Zac", SpellSlot.E)
                 });
 
         public static AIHeroClient lastTarget;
@@ -91,6 +91,7 @@ namespace UnderratedAIO.Helpers
             new BuffData("Cassiopeia", "cassiopeianoxiousblastpoison", SpellSlot.Q, 3),
             new BuffData("Teemo", "bantamtraptarget", SpellSlot.R, 4),
             new BuffData("Tristana", "tristanaechargesound", SpellSlot.E, 1, 3.9f),
+            new BuffData("Trundle", "TrundlePain", SpellSlot.E, 2, 4f),
             new BuffData("Swain", "swainbeamdamage", SpellSlot.Q, 3),
             new BuffData("Swain", "SwainTorment", SpellSlot.Unknown, 4),
             new BuffData("Malzahar", "AlZaharMaleficVisions", SpellSlot.E, 8, 4),
@@ -762,7 +763,7 @@ namespace UnderratedAIO.Helpers
 
         public static bool IsInvulnerable2(AIHeroClient unit)
         {
-            return invulnerable.Any(unit.HasBuff);
+            return invulnerable.Any(unit.HasBuff) || unit.IsInvulnerable;
         }
 
         #endregion
