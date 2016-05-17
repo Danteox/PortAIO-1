@@ -5,6 +5,9 @@ using LeagueSharp.Common;
 using SharpDX;
 using Collision = LeagueSharp.Common.Collision;
 using EloBuddy;
+using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Menu;
+using EloBuddy.SDK;
 
 namespace iKalistaReborn.Utils
 {
@@ -65,9 +68,6 @@ namespace iKalistaReborn.Utils
         /// <returns>
         ///     The <see cref="BuffInstance" />.
         /// </returns>
-        public static BuffInstance GetRendBuff(this Obj_AI_Base target) =>
-            target.Buffs.Find(
-                b => b.Caster.IsMe && b.IsValid && b.DisplayName.ToLowerInvariant() == "kalistaexpungemarker");
 
         /// <summary>
         ///     Gets the current <see cref="BuffInstance" /> Count of Expunge
@@ -90,120 +90,149 @@ namespace iKalistaReborn.Utils
         /// <returns>
         ///     The <see cref="bool" />.
         /// </returns>
+        public static bool HasRendBuff(this Obj_AI_Base target)
+        {
+            return target.GetRendBuff() != null;
+        }
+
+        public static BuffInstance GetRendBuff(this Obj_AI_Base target)
+        {
+            return target.Buffs.Find(b => b.Caster.IsMe && b.IsValid() && b.DisplayName == "KalistaExpungeMarker");
+        }
+
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
-            if (target == null)
+            if (target == null
+                || !target.IsValidTarget(SpellManager.Spell[SpellSlot.E].Range + 200)
+                || !target.HasRendBuff()
+                || target.Health <= 0
+                || !SpellManager.Spell[SpellSlot.E].IsReady())
+            {
                 return false;
+            }
 
-            var baseDamage = SpellManager.Spell[SpellSlot.E].GetDamage(target);
-
-            if (target is AIHeroClient)
+            var hero = target as AIHeroClient;
+            if (hero != null)
             {
-                if (target.HasUndyingBuff() || target.Health < 1 || target.HasBuffOfType(BuffType.SpellShield))
+                if (hero.HasUndyingBuff() || hero.HasSpellShield())
+                {
                     return false;
+                }
 
-                if (target.HasBuff("meditate"))
+                if (hero.ChampionName == "Blitzcrank")
                 {
-                    baseDamage *= (0.5f - 0.05f * target.Spellbook.GetSpell(SpellSlot.W).Level);
+                    if (!hero.HasBuff("BlitzcrankManaBarrierCD") && !hero.HasBuff("ManaBarrier"))
+                    {
+                        return Damages.GetActualDamage(target) > (target.GetTotalHealth() + (hero.Mana / 2));
+                    }
+
+                    if (hero.HasBuff("ManaBarrier") && !(hero.AllShield > 0))
+                    {
+                        return false;
+                    }
                 }
             }
 
-            if (target is Obj_AI_Minion)
-            {
-                if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
-                {
-                    baseDamage *= 0.5f;
-                }
-                //if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
-                //{
-                //    baseDamage *= (1f - (0.07f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
-                //} HM???
-            }
-
-            if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
-            {
-                baseDamage *= 0.55f;
-            }
-
-
-            return (baseDamage - Kalista.getSliderItem(Kalista.miscMenu, "com.ikalista.misc.reduceE")) > target.GetHealthWithShield();
+            return Damages.GetActualDamage(target) > target.GetTotalHealth();
         }
 
         public static float GetRendDamage(Obj_AI_Base target) => SpellManager.Spell[SpellSlot.E].GetDamage(target);
 
-
-        /// <summary>
-        ///     Checks if a target has the Expunge <see cref="BuffInstance" />
-        /// </summary>
-        /// <param name="target">
-        ///     The Target
-        /// </param>
-        /// <returns>
-        ///     The <see cref="bool" />.
-        /// </returns>
-        public static bool HasRendBuff(this Obj_AI_Base target) => target?.GetRendBuff() != null;
-
-
-        /// <summary>
-        ///     Checks if the given target has an invulnerable buff
-        /// </summary>
-        /// <param name="target1">
-        ///     The Target
-        /// </param>
-        /// <returns>
-        ///     The <see cref="bool" />.
-        /// </returns>
-        public static bool HasUndyingBuff(this Obj_AI_Base target1)
+        public static bool HasUndyingBuff(this AIHeroClient target)
         {
-            var target = target1 as AIHeroClient;
-
-            if (target == null) return false;
             // Tryndamere R
-            if (target.ChampionName == "Tryndamere"
-                && target.Buffs.Any(
-                    b => b.Caster.NetworkId == target.NetworkId && b.IsValid && b.DisplayName == "Undying Rage"))
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "UndyingRage"))
             {
                 return true;
             }
 
             // Zilean R
-            if (target.Buffs.Any(b => b.IsValid && b.DisplayName == "Chrono Shift"))
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "ChronoShift"))
             {
                 return true;
             }
 
             // Kayle R
-            if (target.Buffs.Any(b => b.IsValid && b.DisplayName == "JudicatorIntervention"))
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "JudicatorIntervention"))
             {
                 return true;
             }
 
-            if (target.HasBuff("kindredrnodeathbuff"))
+            // Poppy R
+            if (target.ChampionName == "Poppy")
+            {
+                if (
+                    EntityManager.Heroes.Allies.Any(
+                        o =>
+                        !o.IsMe
+                        && o.Buffs.Any(
+                            b =>
+                            b.Caster.NetworkId == target.NetworkId && b.IsValid()
+                            && b.DisplayName == "PoppyDITarget")))
+                {
+                    return true;
+                }
+            }
+
+            //Kindred R
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "kindredrnodeathbuff"))
             {
                 return true;
             }
 
-            //TODO poppy
+            if (target.HasBuffOfType(BuffType.Invulnerability))
+            {
+                return true;
+            }
 
-            return false;
+            return target.IsInvulnerable;
         }
 
-        /// <summary>
-        ///     TODO The is mob killable.
-        /// </summary>
-        /// <param name="target">
-        ///     TODO The target.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="bool" />.
-        /// </returns>
+        public static bool HasSpellShield(this AIHeroClient target)
+        {
+            //Banshee's Veil
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "bansheesveil"))
+            {
+                return true;
+            }
+
+            //Sivir E
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "SivirE"))
+            {
+                return true;
+            }
+
+            //Nocturne W
+            if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "NocturneW"))
+            {
+                return true;
+            }
+
+            //Other spellshields
+            return target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity);
+        }
+
         public static bool IsMobKillable(this Obj_AI_Base target) => IsRendKillable(target as Obj_AI_Minion);
 
-        /*public static bool IsRendKillable(this AIHeroClient target)
+        public static float GetTotalHealth(this Obj_AI_Base target)
         {
-            return IsRendKillable((Obj_AI_Base) target) >= GetHealthWithShield(target) && !HasUndyingBuff(target) && !target.HasBuffOfType(BuffType.SpellShield);
-        }*/
+            return target.Health + target.AllShield + target.AttackShield + target.MagicShield + (target.HPRegenRate * 2);
+        }
 
-        #endregion
+        public static bool IsChecked(this Menu menu, string id)
+        {
+            return menu.Get<CheckBox>(id).CurrentValue;
+        }
+
+        public static int GetValue(this Menu menu, string id)
+        {
+            return menu.Get<Slider>(id).CurrentValue;
+        }
+
+        public static bool IsActive(this Menu menu, string id)
+        {
+            return menu.Get<KeyBind>(id).CurrentValue;
+        }
     }
 }
+# endregion

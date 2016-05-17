@@ -1,4 +1,6 @@
 ﻿using EloBuddy;
+using EloBuddy.SDK;
+using iKalistaReborn.Utils;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -37,6 +39,12 @@ namespace iKalistaReborn.Utils
         private static readonly float[] RawRendDamagePerSpearMultiplier = { 0.2f, 0.225f, 0.25f, 0.275f, 0.3f };
 
         #endregion
+
+        public static float GetRendDamage(Obj_AI_Base target)
+        {
+            return EloBuddy.Player.Instance.CalculateDamageOnUnit(target, DamageType.Physical, GetRawRendDamage(target)) *
+                   (EloBuddy.Player.Instance.HasBuff("summonerexhaust") ? 0.6f : 1);
+        }
 
         #region Public Methods and Operators
 
@@ -118,5 +126,43 @@ namespace iKalistaReborn.Utils
         }
 
         #endregion
+    
+
+    public static float GetActualDamage(Obj_AI_Base target)
+    {
+        if (!SpellManager.Spell[SpellSlot.E].IsReady() || !target.HasRendBuff()) return 0f;
+
+        var damage = GetRendDamage(target);
+
+        if (target.Name.Contains("Baron"))
+        {
+            // Buff Name: barontarget or barondebuff
+            // Baron's Gaze: Baron Nashor takes 50% reduced damage from champions he's damaged in the last 15 seconds. 
+            damage = EloBuddy.Player.Instance.HasBuff("barontarget")
+                ? damage * 0.5f
+                : damage;
+        }
+
+        else if (target.Name.Contains("Dragon"))
+        {
+            // DragonSlayer: Reduces damage dealt by 7% per a stack
+            damage = EloBuddy.Player.Instance.HasBuff("s5test_dragonslayerbuff")
+                ? damage * (1 - (.07f * EloBuddy.Player.Instance.GetBuffCount("s5test_dragonslayerbuff")))
+                : damage;
+        }
+
+        if (EloBuddy.Player.Instance.HasBuff("summonerexhaust"))
+        {
+            damage = damage * 0.6f;
+        }
+
+        if (target.HasBuff("FerociousHowl"))
+        {
+            damage = damage * 0.7f;
+        }
+
+        return damage;
+    }
+
     }
 }
