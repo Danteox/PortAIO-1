@@ -323,8 +323,7 @@ namespace SebbyLib
             if (Combo && getCheckBoxItem("comboDisableMode"))
             {
                 var t = (AIHeroClient)args.Target;
-                if (6 * Player.GetAutoAttackDamage(t) < t.Health - OktwCommon.GetIncomingDamage(t) &&
-                    !t.HasBuff("luxilluminatingfraulein") && !Player.HasBuff("sheen") && !Player.HasBuff("Mastery6261"))
+                if (4 * Player.GetAutoAttackDamage(t) < t.Health - OktwCommon.GetIncomingDamage(t) && !t.HasBuff("luxilluminatingfraulein") && !Player.HasBuff("sheen") && !Player.HasBuff("Mastery6261"))
                     args.Process = false;
             }
 
