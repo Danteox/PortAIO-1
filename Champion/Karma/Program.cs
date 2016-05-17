@@ -28,7 +28,7 @@ namespace Karma
 
         public static Menu Menu;
 
-        public static Menu comboMenu, harassMenu, laneclearMenu, jungleStealMenu, miscMenu, drawingMenu;
+        public static Menu comboMenu, harassMenu, laneclearMenu, miscMenu, drawingMenu;
 
         private static bool MantraIsActive
         {
