@@ -98,7 +98,7 @@ namespace Sebby_Ban_War
 
                 if (Config["blockOut"].Cast<CheckBox>().CurrentValue && !Render.OnScreen(EloBuddy.Drawing.WorldToScreen(args.Target.Position)))
                 {
-                    Console.WriteLine("BLOCK SPELL OUT SCREEN");
+                    //Console.WriteLine("BLOCK SPELL OUT SCREEN");
                     args.Process = false;
                     return;
                 }
@@ -118,7 +118,7 @@ namespace Sebby_Ban_War
             {
                 Random rnd = new Random();
                 EloBuddy.ObjectManager.Player.Spellbook.CastSpell(args.Slot, args.StartPosition.LSExtend(spellPosition, rnd.Next(400, 600)));
-                Console.WriteLine("CUT SPELL");
+                //Console.WriteLine("CUT SPELL");
                 args.Process = false;
                 return;
             }
@@ -126,7 +126,7 @@ namespace Sebby_Ban_War
             var screenPos = EloBuddy.Drawing.WorldToScreen(spellPosition);    
             if (Config["skill"].Cast<CheckBox>().CurrentValue && Utils.TickCount - LastMouseTime < LastMousePos.LSDistance(screenPos) / 20)
             {
-                Console.WriteLine("BLOCK SPELL");
+                //Console.WriteLine("BLOCK SPELL");
                 args.Process = false;
                 return;
             }
@@ -171,7 +171,7 @@ namespace Sebby_Ban_War
                 if (Config["blockOut"].Cast<CheckBox>().CurrentValue && !Render.OnScreen(screenPos))
                 {
                     args.Process = false;
-                    Console.WriteLine("SBW BLOCK AA OUT SCREEN");
+                    //Console.WriteLine("SBW BLOCK AA OUT SCREEN");
                 }
                 if (args.Target is EloBuddy.Obj_AI_Minion && LastType == 0)
                 {
@@ -191,7 +191,7 @@ namespace Sebby_Ban_War
         {
             if (Config["showCPS"].Cast<CheckBox>().CurrentValue)
             {
-                var h = EloBuddy.Drawing.Height * 0.7f;
+                var h = EloBuddy.Drawing.Height * 0.2f;
                 var w = EloBuddy.Drawing.Width * 0.15f;
                 var color = Color.Yellow;
                 if (PathPerSecInfo < 5)
