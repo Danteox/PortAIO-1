@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,6 @@ namespace Sebby_Ban_War
 {
     class Program
     {
-        static void Main(string[] args) { CustomEvents.Game.OnGameLoad += Game_OnGameLoad; }
 
         public static Font Tahoma13;
         public static Menu Config;
@@ -26,7 +25,7 @@ namespace Sebby_Ban_War
         public static int PathPerSecInfo;
         public static int PacketCast = Utils.TickCount;
 
-        private static void Game_OnGameLoad(EventArgs args)
+        public static void Game_OnGameLoad()
         {
             Tahoma13 = new Font(EloBuddy.Drawing.Direct3DDevice, new FontDescription
             { FaceName = "Tahoma", Height = 14, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
