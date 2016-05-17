@@ -831,11 +831,14 @@
 
                 case Orbwalker.ActiveModes.LaneClear:
                     OnLaneclear();
-                    OnJungleclear();
                     break;
 
                 case Orbwalker.ActiveModes.Harass:
                     OnHarass();
+                    break;
+
+                case Orbwalker.ActiveModes.JungleClear:
+                    OnJungleclear();
                     break;
             }
 
