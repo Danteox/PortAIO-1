@@ -179,7 +179,8 @@ namespace iKalistaReborn
             }
 
             drawingMenu = Menu.AddSubMenu("iKalista: Reborn - Drawing", "com.ikalista.drawing");
-            drawingMenu.Add("com.ikalista.drawing.spellRanges", new CheckBox("Draw Spell Ranges"));
+            drawingMenu.Add("com.ikalista.drawing.spellRanges", new CheckBox("Draw Spell Ranges", false));
+            drawingMenu.Add("com.ikalista.drawing.shine", new CheckBox("Shine E Range tho", true));
             drawingMenu.Add("com.ikalista.drawing.eDamage", new CheckBox("Draw E Damage"));//.SetValue(new Circle(true, Color.DarkOliveGreen)));
             drawingMenu.Add("com.ikalista.drawing.damagePercent", new CheckBox("Draw Percent Damage"));//.SetValue(new Circle(true, Color.DarkOliveGreen)));
         }
@@ -217,6 +218,11 @@ namespace iKalistaReborn
                 {
                     Render.Circle.DrawCircle(ObjectManager.Player.Position, spell.Range, Color.DarkOliveGreen);
                 }
+            }
+
+            if (getCheckBoxItem(drawingMenu, "com.ikalista.drawing.shine"))
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellManager.Spell[SpellSlot.E].Range, Color.DarkOliveGreen);
             }
 
             if (getCheckBoxItem(drawingMenu, "com.ikalista.drawing.damagePercent"))
