@@ -127,6 +127,7 @@
     <Compile Include="Champion\Braum\Program.cs" />
     <Compile Include="Champion\Caitlyn\Program.cs" />
     <Compile Include="Champion\Cassiopeia\Program.cs" />
+    <Compile Include="Champion\Kalista\Utils\Damage.cs" />
     <Compile Include="Champion\Kalista\Utils\SentinelManager.cs" />
     <Compile Include="Champion\Kha%27Zix\Extensions.cs" />
     <Compile Include="Champion\Kha%27Zix\Helper.cs" />
@@ -313,7 +314,6 @@
     <Compile Include="Champion\Kalista\Modules\AutoEModule.cs" />
     <Compile Include="Champion\Kalista\Modules\AutoRendModule.cs" />
     <Compile Include="Champion\Kalista\Modules\JungleStealModule.cs" />
-    <Compile Include="Champion\Kalista\Utils\Damages.cs" />
     <Compile Include="Champion\Kalista\Utils\Helper.cs" />
     <Compile Include="Champion\Kalista\Utils\SpellManager.cs" />
     <Compile Include="Champion\Karma\Program.cs" />
@@ -1105,6 +1105,7 @@
     <None Include="Resources\RecallBar.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Dual-Port\ElEkko\" />
     <Folder Include="Libraries\ValvraveSharp\Plugin\" />
   </ItemGroup>
   <ItemGroup>
