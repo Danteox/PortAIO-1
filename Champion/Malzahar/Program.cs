@@ -92,10 +92,16 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
             {
-                args.Process = false;
-                Orbwalker.DisableAttacking = true;
-                Orbwalker.DisableMovement = true;
-                return;
+                if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
+                {
+                    OktwCommon.blockMove = true;
+                    OktwCommon.blockAttack = true;
+                    OktwCommon.blockSpells = true;
+                    Orbwalker.DisableAttacking = true;
+                    Orbwalker.DisableMovement = true;
+                    args.Process = false;
+                    return;
+                }
             }
 
             if (args.Slot == SpellSlot.R)
@@ -152,8 +158,12 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
             {
+                OktwCommon.blockMove = true;
+                OktwCommon.blockAttack = true;
+                OktwCommon.blockSpells = true;
                 Orbwalker.DisableAttacking = true;
                 Orbwalker.DisableMovement = true;
+
                 return;
             }
 
@@ -174,6 +184,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
             {
+                OktwCommon.blockMove = true;
+                OktwCommon.blockAttack = true;
+                OktwCommon.blockSpells = true;
                 Orbwalker.DisableAttacking = true;
                 Orbwalker.DisableMovement = true;
                 return;
@@ -190,16 +203,33 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
+            if (Program.LagFree(4) && R.IsReady() && getCheckBoxItem(rMenu, "autoR"))
+                LogicR();
+
+
             if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
             {
+                OktwCommon.blockMove = true;
+                OktwCommon.blockAttack = true;
+                OktwCommon.blockSpells = true;
                 Orbwalker.DisableAttacking = true;
                 Orbwalker.DisableMovement = true;
-                Program.debug("cast R");
                 return;
             }
+            else
+            {
+                OktwCommon.blockMove = false;
+                OktwCommon.blockAttack = false;
+                OktwCommon.blockAttack = false;
+                OktwCommon.blockMove = false;
+                Orbwalker.DisableAttacking = false;
+                Orbwalker.DisableMovement = false;
+            }
 
-            Orbwalker.DisableAttacking = false;
-            Orbwalker.DisableMovement = false;
+            if (Q.IsCharging && (int)(Game.Time * 10) % 2 == 0)
+            {
+               EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            }
 
             if (R.IsReady() && getKeyBindItem(rMenu, "useR"))
             {
@@ -223,8 +253,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 LogicQ();
             if (Program.LagFree(3) && W.IsReady() && getCheckBoxItem(wMenu, "autoW"))
                 LogicW();
-            if (Program.LagFree(4) && R.IsReady() && getCheckBoxItem(rMenu, "autoR"))
-                LogicR();
+
         }
 
         private static void LogicQ()
