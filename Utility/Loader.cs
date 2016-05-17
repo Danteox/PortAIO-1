@@ -180,7 +180,7 @@ namespace PortAIO.Utility
                 }
                 if (Player.ChampionName.Equals(Champion[14]))
                 {
-                    Miscc.Add("xerath", new ComboBox("Use addon for Xerath : ", 0, "OKTW", "ElXerath"));
+                    Miscc.Add("xerath", new ComboBox("Use addon for Xerath : ", 0, "OKTW", "ElXerath", "Edited Xerath"));
                 }
                 if (Player.ChampionName.Equals(Champion[15]))
                 {
