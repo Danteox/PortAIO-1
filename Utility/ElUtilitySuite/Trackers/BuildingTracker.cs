@@ -69,6 +69,8 @@
         /// <summary>
         ///     Loads this instance.
         /// </summary>
+        /// 
+        /// </summary>
         public void Load()
         {
             Font = new Font(
@@ -85,7 +87,6 @@
             Drawing.OnPreReset += args => { Font.OnLostDevice(); };
             Drawing.OnPostReset += args => { Font.OnResetDevice(); };
         }
-
         #endregion
 
         #region Methods

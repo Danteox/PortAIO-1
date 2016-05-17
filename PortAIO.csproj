@@ -842,6 +842,7 @@
     <Compile Include="Utility\ElUtilitySuite\Summoners\Mark.cs" />
     <Compile Include="Utility\ElUtilitySuite\Summoners\Smite.cs" />
     <Compile Include="Utility\ElUtilitySuite\Trackers\BuildingTracker.cs" />
+    <Compile Include="Utility\ElUtilitySuite\Trackers\HealthTracker.cs" />
     <Compile Include="Utility\ElUtilitySuite\Trackers\JungleTracker.cs" />
     <Compile Include="Utility\ElUtilitySuite\Utility\AntiStealth.cs" />
     <Compile Include="Utility\ElUtilitySuite\Utility\Flash.cs" />
