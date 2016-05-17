@@ -56,7 +56,7 @@
         ///     The menu.
         /// </value>
         private static Menu Menu { get; set; }
-        public static Menu comboMenu, harassMenu, healMenu, clearMenu, miscMenu;
+        public static Menu comboMenu, harassMenu, healMenu, clearMenu, miscMenu, lasthitMenu, jungleMenu;
 
 
         /// <summary>
@@ -122,18 +122,23 @@
             harassMenu.Add("ElEasy.Ryze.AutoHarass.Mana", new Slider("Minimum Mana", 55, 1, 100));
 
             clearMenu = Menu.AddSubMenu("Clear", "Clear");
-            clearMenu.Add("ElEasy.Ryze.Lasthit.Q", new CheckBox("Use Q Last Hit"));
-            clearMenu.Add("ElEasy.Ryze.Lasthit.W", new CheckBox("Use W Last Hit"));
-            clearMenu.Add("ElEasy.Ryze.Lasthit.E", new CheckBox("Use E Last Hit"));
             clearMenu.Add("ElEasy.Ryze.LaneClear.Q", new CheckBox("Use Q Lane Clear"));
             clearMenu.Add("ElEasy.Ryze.LaneClear.W", new CheckBox("Use W Lane Clear"));
             clearMenu.Add("ElEasy.Ryze.LaneClear.E", new CheckBox("Use E Lane Clear"));
             clearMenu.Add("ElEasy.Ryze.LaneClear.R", new CheckBox("Use R Lane Clear"));
             clearMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Lane1", new Slider("Minimum Mana for Lane Clear", 1, 0, 100));
-            clearMenu.Add("ElEasy.Ryze.JungleClear.Q", new CheckBox("Use Q Jungle Clear"));
-            clearMenu.Add("ElEasy.Ryze.JungleClear.W", new CheckBox("Use W Jungle Clear"));
-            clearMenu.Add("ElEasy.Ryze.JungleClear.E", new CheckBox("Use E Jungle Clear"));
-            clearMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Jungle", new Slider("Minimum Mana for Jungle Clear", 55, 0, 100));
+
+
+            lasthitMenu = Menu.AddSubMenu("Lasthit", "Lasthit");
+            lasthitMenu.Add("ElEasy.Ryze.Lasthit.Q", new CheckBox("Use Q Last Hit"));
+            lasthitMenu.Add("ElEasy.Ryze.Lasthit.W", new CheckBox("Use W Last Hit"));
+            lasthitMenu.Add("ElEasy.Ryze.Lasthit.E", new CheckBox("Use E Last Hit"));
+
+            jungleMenu = Menu.AddSubMenu("Jungle", "Jungle");
+            jungleMenu.Add("ElEasy.Ryze.JungleClear.Q", new CheckBox("Use Q Jungle Clear"));
+            jungleMenu.Add("ElEasy.Ryze.JungleClear.W", new CheckBox("Use W Jungle Clear"));
+            jungleMenu.Add("ElEasy.Ryze.JungleClear.E", new CheckBox("Use E Jungle Clear"));
+            jungleMenu.Add("ElEasy.Ryze.Clear.Player.Mana.Jungle", new Slider("Minimum Mana for Jungle Clear", 55, 0, 100));
 
             miscMenu = Menu.AddSubMenu("Miscellaneous", "Miscellaneous");
             miscMenu.Add("ElEasy.Ryze.GapCloser.Activated", new CheckBox("Anti gapcloser"));
@@ -525,10 +530,10 @@
 
         private static void OnJungleclear()
         {
-            var useQ = getCheckBoxItem(clearMenu, "ElEasy.Ryze.JungleClear.Q");
-            var useW = getCheckBoxItem(clearMenu, "ElEasy.Ryze.JungleClear.W"); 
-            var useE = getCheckBoxItem(clearMenu, "ElEasy.Ryze.JungleClear.E"); 
-            var mana = getSliderItem(clearMenu, "ElEasy.Ryze.Clear.Player.Mana.Jungle");
+            var useQ = getCheckBoxItem(jungleMenu, "ElEasy.Ryze.JungleClear.Q");
+            var useW = getCheckBoxItem(jungleMenu, "ElEasy.Ryze.JungleClear.W"); 
+            var useE = getCheckBoxItem(jungleMenu, "ElEasy.Ryze.JungleClear.E"); 
+            var mana = getSliderItem(jungleMenu, "ElEasy.Ryze.Clear.Player.Mana.Jungle");
 
             if (Player.ManaPercent < mana)
             {
@@ -576,7 +581,7 @@
                 return;
             }
 
-            var target = MinionManager.GetMinions(Player.ServerPosition, spells[Spells.W].Range).FirstOrDefault();
+            var target = MinionManager.GetMinions(Player.Position, spells[Spells.Q].Range).FirstOrDefault();
             if (target == null)
             {
                 return;
@@ -758,9 +763,9 @@
 
         private static void OnLasthit()
         {
-            var useQ = getCheckBoxItem(clearMenu, "ElEasy.Ryze.Lasthit.Q"); 
-            var useW = getCheckBoxItem(clearMenu, "ElEasy.Ryze.Lasthit.W"); 
-            var useE = getCheckBoxItem(clearMenu, "ElEasy.Ryze.Lasthit.E");
+            var useQ = getCheckBoxItem(lasthitMenu, "ElEasy.Ryze.Lasthit.Q"); 
+            var useW = getCheckBoxItem(lasthitMenu, "ElEasy.Ryze.Lasthit.W"); 
+            var useE = getCheckBoxItem(lasthitMenu, "ElEasy.Ryze.Lasthit.E");
 
             var minions = MinionManager.GetMinions(Player.ServerPosition, spells[Spells.W].Range).FirstOrDefault();
             if (minions == null)
@@ -819,27 +824,28 @@
                 return;
             }
 
-            switch (Orbwalker.ActiveModesFlags)
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
-                case Orbwalker.ActiveModes.Combo:
-                    OnCombo();
-                    break;
+                OnCombo();
+            }
 
-                case Orbwalker.ActiveModes.LastHit:
-                    OnLasthit();
-                    break;
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
+            {
+                OnHarass();
+            }
 
-                case Orbwalker.ActiveModes.LaneClear:
-                    OnLaneclear();
-                    break;
-
-                case Orbwalker.ActiveModes.Harass:
-                    OnHarass();
-                    break;
-
-                case Orbwalker.ActiveModes.JungleClear:
-                    OnJungleclear();
-                    break;
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+            {
+                OnLaneclear();
+            }
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
+            {
+                OnJungleclear();
+            }
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit))
+            {
+                OnLasthit();
             }
 
             if (getKeyBindItem(harassMenu, "ElEasy.Ryze.AutoHarass.Activated"))
