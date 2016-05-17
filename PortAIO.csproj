@@ -614,7 +614,6 @@
     <Compile Include="Dual-Port\Vayne Hunter Reborn\Utility\Variables.cs" />
     <Compile Include="Dual-Port\Vayne Hunter Reborn\Utility\VHRBootstrap.cs" />
     <Compile Include="Dual-Port\Vayne Hunter Reborn\VHR.cs" />
-    <Compile Include="Dual-Port\xcsoft Xerath\Program.cs" />
     <Compile Include="Dual-Port\YasuoPro\Evade\EvadeSpellData.cs" />
     <Compile Include="Dual-Port\YasuoPro\Evade\EvadeSpellDatabase.cs" />
     <Compile Include="Dual-Port\YasuoPro\Extensions.cs" />

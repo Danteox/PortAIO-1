@@ -180,7 +180,7 @@ namespace PortAIO.Utility
                 }
                 if (Player.ChampionName.Equals(Champion[14]))
                 {
-                    Miscc.Add("xerath", new ComboBox("Use addon for Xerath : ", 0, "OKTW", "ElXerath", "Edited Xerath"));
+                    Miscc.Add("xerath", new ComboBox("Use addon for Xerath : ", 0, "OKTW", "ElXerath"));
                 }
                 if (Player.ChampionName.Equals(Champion[15]))
                 {
@@ -279,7 +279,6 @@ namespace PortAIO.Utility
             Miscc.AddSeparator();
             Miscc.Add("cheat", new CheckBox("Enable TheCheater?", false));
             Miscc.Add("banwards", new CheckBox("Enable Sebby BanWars?", false));
-
 
 
             /*

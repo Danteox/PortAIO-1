@@ -233,9 +233,6 @@ namespace PortAIO
                             case 1:
                                 ElXerath.Xerath.Game_OnGameLoad();
                                 break;
-                            case 2:
-                                Xerath_edit.Program.Game_OnGameLoad();
-                                break;
                             default:
                                 SebbyLib.Program.GameOnOnGameLoad();
                                 break;
