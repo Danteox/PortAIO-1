@@ -120,7 +120,6 @@ namespace iKalistaReborn
             comboMenu.Add("com.ikalista.combo.useQ", new CheckBox("Use Q"));
             comboMenu.Add("com.ikalista.combo.useE", new CheckBox("Use E"));
             comboMenu.Add("com.ikalista.combo.stacks", new Slider("Rend at X stacks", 10, 1, 20));
-            comboMenu.Add("com.ikalista.combo.usestacks", new CheckBox("Use Rend at X stacks?"));
             comboMenu.Add("com.ikalista.combo.eLeaving", new CheckBox("Use E Leaving", true));
             comboMenu.Add("com.ikalista.combo.ePercent", new Slider("Min Percent for E Leaving", 50, 10, 100));
             comboMenu.Add("com.ikalista.combo.saveMana", new CheckBox("Save Mana for E"));

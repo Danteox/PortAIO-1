@@ -33,9 +33,6 @@ namespace iKalistaReborn.Modules
 
         public void OnExecute()
         {
-            if (getCheckBoxItem(comboMenu, "com.ikalista.combo.usestacks"))
-            { 
-
             foreach (var source in EntityManager.Heroes.Enemies.Where(x => x.LSIsValidTarget() && x.HasRendBuff() && SpellManager.Spell[SpellSlot.E].IsInRange(x)))
             {
                 if (source.IsRendKillable() || source.GetRendBuffCount() >= getSliderItem(comboMenu, "com.ikalista.combo.stacks"))
@@ -43,7 +40,6 @@ namespace iKalistaReborn.Modules
                     SpellManager.Spell[SpellSlot.E].Cast();
                 }
             }
-          }
         }
 
         public ModuleType GetModuleType()
