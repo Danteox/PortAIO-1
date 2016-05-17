@@ -439,6 +439,8 @@ namespace PortAIO
                     case "galio": // Underrated AIO
                         UnderratedAIO.Champions.Galio.OnLoad();
                         break;
+                    case "gangplank": // Underrated AIO
+                        UnderratedAIO.Champions.Gangplank.OnLoad();
                         break;
                     case "garen": // Underrated AIO
                         UnderratedAIO.Champions.Garen.OnLoad();
@@ -457,20 +459,6 @@ namespace PortAIO
                                 break;
                             default:
                                 GragasTheDrunkCarry.Gragas.Game_OnGameLoad();
-                                break;
-                        }
-                        break;
-                    case "gangplank": // Underrated AIO
-                        switch (Loader.gangplank)
-                        {
-                            case 0:
-                                UnderratedAIO.Champions.Gangplank.OnLoad();
-                                break;
-                            case 1:
-                                BadaoKingdom.Program.Game_OnGameLoad();
-                                break;
-                            default:
-                                UnderratedAIO.Champions.Gangplank.OnLoad();
                                 break;
                         }
                         break;

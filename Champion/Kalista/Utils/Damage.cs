@@ -1,134 +1,82 @@
 ﻿using EloBuddy;
+using LeagueSharp.Common;
 using EloBuddy.SDK;
 using iKalistaReborn.Utils;
-using LeagueSharp;
-using LeagueSharp.Common;
+using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Menu;
 
 namespace iKalistaReborn.Utils
 {
-    /// <summary>
-    ///     TODO The damages.
-    /// </summary>
-    internal static class Damages
+    public static class Damages
     {
-        #region Static Fields
+        public static readonly EloBuddy.SDK.Damage.DamageSourceBoundle QDamage = new EloBuddy.SDK.Damage.DamageSourceBoundle();
 
-        /// <summary>
-        ///     TODO The player.
-        /// </summary>
-        private static readonly AIHeroClient Player = ObjectManager.Player;
-
-        /// <summary>
-        ///     TODO The raw rend damage.
-        /// </summary>
         private static readonly float[] RawRendDamage = { 20, 30, 40, 50, 60 };
-
-        /// <summary>
-        ///     TODO The raw rend damage multiplier.
-        /// </summary>
         private static readonly float[] RawRendDamageMultiplier = { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f };
-
-        /// <summary>
-        ///     TODO The raw rend damage per spear.
-        /// </summary>
         private static readonly float[] RawRendDamagePerSpear = { 10, 14, 19, 25, 32 };
-
-        /// <summary>
-        ///     TODO The raw rend damage per spear multiplier.
-        /// </summary>
         private static readonly float[] RawRendDamagePerSpearMultiplier = { 0.2f, 0.225f, 0.25f, 0.275f, 0.3f };
 
-        #endregion
-
-        public static float GetRendDamage(Obj_AI_Base target)
+        static Damages()
         {
-            return EloBuddy.Player.Instance.CalculateDamageOnUnit(target, DamageType.Physical, GetRawRendDamage(target)) *
-                   (EloBuddy.Player.Instance.HasBuff("summonerexhaust") ? 0.6f : 1);
+            QDamage.Add(new EloBuddy.SDK.Damage.DamageSource(SpellSlot.Q, DamageType.Physical)
+            {
+                Damages = new float[] { 10, 70, 130, 190, 250 }
+            });
+            QDamage.Add(new EloBuddy.SDK.Damage.BonusDamageSource(SpellSlot.Q, DamageType.Physical)
+            {
+                DamagePercentages = new float[] { 1, 1, 1, 1, 1 }
+            });
         }
 
-        #region Public Methods and Operators
-
-        /// <summary>
-        ///     TODO The get raw rend damage.
-        /// </summary>
-        /// <param name="target">
-        ///     TODO The target.
-        /// </param>
-        /// <param name="customStacks">
-        ///     TODO The custom stacks.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="float" />.
-        /// </returns>
-        public static float GetRawRendDamage(Obj_AI_Base target, int customStacks = -1)
+        public static bool IsRendKillable(Obj_AI_Base target, float? damage = null)
         {
-            // Get buff
-            var buff = target?.GetRendBuff();
+            // Validate unit
+            if (target == null || !target.IsValidTarget() || !target.HasRendBuff())
+            {
+                return false;
+            }
 
-            if (buff == null && customStacks <= -1) return 0;
+            // Take into account all kinds of shields
+            var totalHealth = target.TotalShieldHealth();
 
-            if (buff != null)
-                return RawRendDamage[SpellManager.Spell[SpellSlot.E].Level - 1]
-                       + RawRendDamageMultiplier[SpellManager.Spell[SpellSlot.E].Level - 1]
-                       * Player.TotalAttackDamage + // Base damage
-                       ((customStacks < 0 ? buff.Count : customStacks) - 1) * // Spear count
-                       (RawRendDamagePerSpear[SpellManager.Spell[SpellSlot.E].Level - 1]
-                        + RawRendDamagePerSpearMultiplier[SpellManager.Spell[SpellSlot.E].Level - 1]
-                        * Player.TotalAttackDamage); // Damage per spear
+            var hero = target as AIHeroClient;
+            if (hero != null)
+            {
+                // Validate that target has no undying buff or spellshield
+                if (hero.HasUndyingBuff() || hero.HasSpellShield())
+                {
+                    return false;
+                }
 
-            return 0;
+                // Take into account Blitzcranks passive
+                if (hero.ChampionName == "Blitzcrank" && !target.HasBuff("BlitzcrankManaBarrierCD") && !target.HasBuff("ManaBarrier"))
+                {
+                    totalHealth += target.Mana / 2;
+                }
+            }
+
+            return (damage ?? GetRendDamage(target)) > totalHealth;
         }
 
-        /// <summary>
-        ///     TODO The get rend damage.
-        /// </summary>
-        /// <param name="target">
-        ///     TODO The target.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="float" />.
-        /// </returns>
         public static float GetRendDamage(AIHeroClient target)
         {
             return GetRendDamage(target, -1);
         }
 
-        /// <summary>
-        ///     TODO The get rend damage.
-        /// </summary>
-        /// <param name="target">
-        ///     TODO The target.
-        /// </param>
-        /// <param name="customStacks">
-        ///     TODO The custom stacks.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="float" />.
-        /// </returns>
-        public static float GetRendDamage(Obj_AI_Base target, int customStacks = -1)
+        public static int getSliderItem(Menu m, string item)
+        {
+            return m[item].Cast<Slider>().CurrentValue;
+        }
+
+
+        public static float GetRendDamage(Obj_AI_Base target, int customStacks = -1, BuffInstance rendBuff = null)
         {
             // Calculate the damage and return
-            return (float)Player.CalcDamage(target, DamageType.Physical, GetRawRendDamage(target, customStacks));
+            return Player.Instance.CalculateDamageOnUnit(target, DamageType.Physical, GetRawRendDamage(target, customStacks, rendBuff) - getSliderItem(Kalista.miscMenu, "com.ikalista.misc.reduceE")) *
+                   (Player.Instance.HasBuff("SummonerExhaustSlow") ? 0.6f : 1); // Take into account Exhaust, migh just add that to the SDK
         }
 
-        /// <summary>
-        ///     TODO The total attack damage.
-        /// </summary>
-        /// <param name="target">
-        ///     TODO The target.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="float" />.
-        /// </returns>
-        public static float TotalAttackDamage(this Obj_AI_Base target)
-        {
-            return target.BaseAttackDamage + target.FlatPhysicalDamageMod;
-        }
-
-        #endregion
-    
-
-    public static float GetActualDamage(Obj_AI_Base target)
+      public static float GetActualDamage(Obj_AI_Base target)
     {
         if (!SpellManager.Spell[SpellSlot.E].IsReady() || !target.HasRendBuff()) return 0f;
 
@@ -164,5 +112,19 @@ namespace iKalistaReborn.Utils
         return damage;
     }
 
+    
+        public static float GetRawRendDamage(Obj_AI_Base target, int customStacks = -1, BuffInstance rendBuff = null)
+        {
+            rendBuff = rendBuff ?? target.GetRendBuff();
+            var stacks = (customStacks > -1 ? customStacks : rendBuff != null ? rendBuff.Count : 0) - 1;
+            if (stacks > -1)
+            {
+                var index = SpellManager.Spell[SpellSlot.E].Level - 1;
+                return RawRendDamage[index] + stacks * RawRendDamagePerSpear[index] +
+                       Player.Instance.TotalAttackDamage * (RawRendDamageMultiplier[index] + stacks * RawRendDamagePerSpearMultiplier[index]);
+            }
+
+            return 0;
+        }
     }
 }

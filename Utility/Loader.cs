@@ -66,7 +66,6 @@ namespace PortAIO.Utility
         public static int sona { get { return Miscc["sona"].Cast<ComboBox>().CurrentValue; } }
         public static int ryze { get { return Miscc["ryze"].Cast<ComboBox>().CurrentValue; } }
         public static int ekko { get { return Miscc["ekko"].Cast<ComboBox>().CurrentValue; } }
-        public static int gangplank { get { return Miscc["gangplank"].Cast<ComboBox>().CurrentValue; } }
 
 
         public static Menu Miscc;
@@ -113,8 +112,6 @@ namespace PortAIO.Utility
             "Sona", //31
             "Ryze", //32
             "Ekko", //33
-            "Gangplank", //34
-
 
 
         });
@@ -262,10 +259,6 @@ namespace PortAIO.Utility
                 if (Player.ChampionName.Equals(Champion[33]))
                 {
                     Miscc.Add("Ekko", new ComboBox("Use addon for Ekko : ", 0, "OKTW", "ElEkko"));
-                }
-                if (Player.ChampionName.Equals(Champion[34]))
-                {
-                    Miscc.Add("Gangplank", new ComboBox("Use addon for Ekko : ", 0, "Underrated GP", "Badao GP"));
                 }
             }
             else
