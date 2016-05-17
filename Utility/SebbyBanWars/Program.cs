@@ -35,7 +35,6 @@ namespace Sebby_Ban_War
             Config.Add("ClickTime", new Slider("Minimum Click Time (100)",100,0,300));
             Config.Add("showCPS", new CheckBox("Show action per sec",true));
             Config.Add("blockOut", new CheckBox("Block targeted action out screen",true));
-            Config.Add("cut", new CheckBox("CUT SKILLSHOTS",true));
             Config.Add("skill", new CheckBox("BLOCK inhuman skill cast", true));
             EloBuddy.Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
             EloBuddy.Player.OnIssueOrder += Obj_AI_Base_OnIssueOrder;
@@ -112,15 +111,6 @@ namespace Sebby_Ban_War
 
             var spell = EloBuddy.ObjectManager.Player.Spellbook.Spells.FirstOrDefault(x => x.Slot == args.Slot);
 
-            // LINE CUT SPELL RANGE
-            if (Config["cut"].Cast<CheckBox>().CurrentValue && spell != null && spell.SData.LineWidth != 0 && spellPosition.LSDistance(args.StartPosition) > 700)
-            {
-                Random rnd = new Random();
-                EloBuddy.ObjectManager.Player.Spellbook.CastSpell(args.Slot, args.StartPosition.LSExtend(spellPosition, rnd.Next(400, 600)));
-                //Console.WriteLine("CUT SPELL");
-                args.Process = false;
-                return;
-            }
             
             var screenPos = EloBuddy.Drawing.WorldToScreen(spellPosition);    
             if (Config["skill"].Cast<CheckBox>().CurrentValue && Utils.TickCount - LastMouseTime < LastMousePos.LSDistance(screenPos) / 20)
