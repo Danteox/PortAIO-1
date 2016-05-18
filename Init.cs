@@ -890,8 +890,19 @@ namespace PortAIO
                     case "vi": //ElVi
                         ElVi.Vi.OnLoad();
                         break;
-                    case "trundle": // ElTrundle
-                        ElTrundle.Trundle.OnLoad();
+                    case "trundle": // ElTrundle && Fast Trundle
+                        switch (Loader.sion)
+                        {
+                            case 0:
+                                ElTrundle.Trundle.OnLoad();
+                                break;
+                            case 1:
+                                FastTrundle.Trundle.Game_OnGameLoad();
+                                break;
+                            default:
+                                ElTrundle.Trundle.OnLoad();
+                                break;
+                        }
                         break;
                     case "taric": // SkyLv_Taric
                         new SkyLv_Taric.SkyLv_Taric();

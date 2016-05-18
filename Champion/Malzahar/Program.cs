@@ -92,7 +92,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
             {
-                if ((Player.IsChannelingImportantSpell() || Game.Time - Rtime < 0.5) && Game.Time - Rtime < 2.5)
+
                 {
                     OktwCommon.blockMove = true;
                     OktwCommon.blockAttack = true;
