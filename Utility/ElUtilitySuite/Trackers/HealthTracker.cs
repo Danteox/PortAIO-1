@@ -58,6 +58,39 @@
 
         #endregion
 
+        /// <summary>
+        ///     Gets the spacing between HUD elements
+        /// </summary>
+        private int HudSpacing
+        {
+            get
+            {
+                return getSliderItem("HealthTracker.Spacing");
+            }
+        }
+
+        /// <summary>
+        ///     Gets the right offset of the HUD elements
+        /// </summary>
+        private int HudOffsetRight
+        {
+            get
+            {
+                return getSliderItem("HealthTracker.OffsetRight");
+            }
+        }
+
+        /// <summary>
+        ///     Gets the top offset between the HUD elements
+        /// </summary>
+        private int HudOffsetTop
+        {
+            get
+            {
+               return getSliderItem("HealthTracker.OffsetTop");
+            }
+        }
+
         #region Public Methods and Operators
 
         /// <summary>
@@ -72,8 +105,9 @@
         {
             enemySidebarMenu = rootMenu.AddSubMenu("Enemy healthbars", "healthenemies");
             enemySidebarMenu.Add("DrawHealth_", new CheckBox("Activated"));
-            enemySidebarMenu.Add("OffsetTop", new Slider("Offset Top", 75, 0, 500));
-            enemySidebarMenu.Add("OffsetRight", new Slider("Offset Right", 170, 0, 500));
+            enemySidebarMenu.Add("HealthTracker.OffsetTop", new Slider("Offset Top", 75, 0, 500));
+            enemySidebarMenu.Add("HealthTracker.OffsetRight", new Slider("Offset Right", 170, 0, 500));
+            enemySidebarMenu.Add("HealthTracker.Spacing", new Slider("Spacing", 170, 0, 30));
             enemySidebarMenu.Add("FontSize", new Slider("Font size", 15, 13, 30));
 
         }
@@ -115,7 +149,7 @@
 
             float i = 0;
 
-            foreach (var hero in HeroManager.Enemies.Where(x => !x.IsDead))
+            foreach (var hero in HeroManager.Enemies)
             {
                 var champion = hero.ChampionName;
                 if (champion.Length > 12)
@@ -123,34 +157,37 @@
                     champion = champion.Remove(7) + "...";
                 }
 
+                // Draws the championnames
                 Font.DrawText(
                     null,
                     champion,
                     (int)
-                    ((float)(Drawing.Width - getSliderItem("OffsetRight")) - 60f
-                     - Font.MeasureText(null, champion, FontDrawFlags.Right).Width / 2f),
+                    ((float)(Drawing.Width - this.HudOffsetRight - 60f
+                     - Font.MeasureText(null, champion, FontDrawFlags.Right).Width / 2f)),
                     (int)
-                    (getSliderItem("OffsetTop") + i + 4
+                    (this.HudOffsetTop + i + 4
                      - Font.MeasureText(null, champion, FontDrawFlags.Right).Height / 2f),
-                    new ColorBGRA(255, 255, 255, 255));
+                    hero.HealthPercent > 0 ? new ColorBGRA(255, 255, 255, 255) : new ColorBGRA(244, 8, 8, 255));
 
+                // Draws the rectangle
                 this.DrawRect(
-                    Drawing.Width - getSliderItem("OffsetRight"),
-                    getSliderItem("OffsetTop") + i,
+                    Drawing.Width - this.HudOffsetRight,
+                    this.HudOffsetTop + i,
                     100,
                     this.BarHeight,
                     1,
-                    Color.LightBlue);
+                    Color.FromArgb(255, 51, 55, 51));
 
+                // Fils the rectangle
                 this.DrawRect(
-                    Drawing.Width - getSliderItem("OffsetRight"),
-                    getSliderItem("OffsetTop") + i,
-                    (int)(hero.HealthPercent),
+                    Drawing.Width - this.HudOffsetRight,
+                    this.HudOffsetTop + i,
+                    hero.HealthPercent <= 0 ? 100 : (int)(hero.HealthPercent),
                     this.BarHeight,
                     1,
-                    hero.HealthPercent < 30 ? Color.Orange : Color.Green);
+                    hero.HealthPercent < 30 && hero.HealthPercent > 0 ? Color.FromArgb(255, 230, 169, 14) : hero.HealthPercent <= 0 ? Color.FromArgb(255, 206, 20, 30) : Color.FromArgb(255, 29, 201, 38));
 
-                i += 20f;
+                i += 20f + this.HudSpacing;
             }
         }
 

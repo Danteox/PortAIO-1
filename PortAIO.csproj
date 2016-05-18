@@ -215,6 +215,8 @@
     <Compile Include="Dual-Port\ExorCait\Properties\Utilities\Methods.cs" />
     <Compile Include="Dual-Port\ExorCait\Properties\Utilities\Spells.cs" />
     <Compile Include="Dual-Port\ExorCait\Properties\Utilities\Targets.cs" />
+    <Compile Include="Dual-Port\FastTrundle\Trundle.cs" />
+    <Compile Include="Dual-Port\FastTrundle\TrundleMenu.cs" />
     <Compile Include="Dual-Port\iDzEzreal\Ezreal.cs" />
     <Compile Include="Dual-Port\iDzEzreal\EzrealBootstrap.cs" />
     <Compile Include="Dual-Port\iDzEzreal\MenuHelper\MenuGenerator.cs" />
@@ -1111,6 +1113,7 @@
     <None Include="Resources\RecallBar.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Dual-Port\BadaoRiven\" />
     <Folder Include="Libraries\ValvraveSharp\Plugin\" />
   </ItemGroup>
   <ItemGroup>

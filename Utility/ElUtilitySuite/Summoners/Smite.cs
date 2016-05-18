@@ -384,6 +384,7 @@
             smiteMenu = rootMenu.AddSubMenu("Smite", "Smite");
             smiteMenu.Add("ElSmite.Activated", new KeyBind("Smite Activated", false, KeyBind.BindTypes.PressToggle, 'M'));
             smiteMenu.Add("Smite.Spell", new CheckBox("Use spell smite combo"));
+            smiteMenu.Add("Smite.Ammo", new CheckBox("Save 1 smite charge"));
 
             if (Game.MapId == GameMapId.SummonersRift)
             {
@@ -793,6 +794,11 @@
         {
             try
             {
+                if (getCheckBoxItem("Smite.Ammo") && this.Player.GetSpell(this.SmiteSpell.Slot).Ammo == 1)
+                {
+                   return;
+                }
+
                 if (getCheckBoxItem("ElSmite.KS.Combo")
                     && this.Player.GetSpell(this.SmiteSpell.Slot).Name.ToLower() == "s5_summonersmiteduel"
                     && this.ComboModeActive)
