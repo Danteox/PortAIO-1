@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
@@ -154,14 +154,22 @@ namespace ElZilean
 
             var zileanQEnemyBomb =
                 HeroManager.Enemies.Find(x => x.HasBuff("ZileanQEnemyBomb") && x.IsValidTarget(spells[Spells.Q].Range));
-
             if (getCheckBoxItem(comboMenu, "ElZilean.Combo.Q") && spells[Spells.Q].IsReady()
-                && target.IsValidTarget(spells[Spells.Q].Range))
+            && target.IsValidTarget(spells[Spells.Q].Range) && !target.CanMove)
             {
                 var pred = spells[Spells.Q].GetPrediction(target);
                 if (pred.Hitchance >= HitChance.High)
                 {
                     spells[Spells.Q].Cast(target);
+                }
+            }
+            else if (getCheckBoxItem(comboMenu, "ElZilean.Combo.Q") && spells[Spells.Q].IsReady()
+                && target.IsValidTarget(spells[Spells.Q].Range))
+            {
+                var pred = spells[Spells.Q].GetPrediction(target);
+                if (pred.Hitchance >= HitChance.High)
+                {
+                    spells[Spells.Q].Cast(pred.CastPosition);
                 }
             }
 
@@ -199,14 +207,22 @@ namespace ElZilean
             {
                 return;
             }
-
             if (getCheckBoxItem(harassMenu, "ElZilean.Harass.Q") && spells[Spells.Q].IsReady()
-                && target.IsValidTarget(spells[Spells.Q].Range))
+                && target.IsValidTarget(spells[Spells.Q].Range) && !target.CanMove)
             {
                 var pred = spells[Spells.Q].GetPrediction(target);
                 if (pred.Hitchance >= HitChance.High)
                 {
                     spells[Spells.Q].Cast(target);
+                }
+            }
+            else if (getCheckBoxItem(harassMenu, "ElZilean.Harass.Q") && spells[Spells.Q].IsReady()
+                && target.IsValidTarget(spells[Spells.Q].Range))
+            {
+                var pred = spells[Spells.Q].GetPrediction(target);
+                if (pred.Hitchance >= HitChance.High)
+                {
+                    spells[Spells.Q].Cast(pred.CastPosition);
                 }
             }
 
