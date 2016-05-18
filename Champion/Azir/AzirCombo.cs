@@ -1,4 +1,4 @@
-﻿using ClipperLib;
+using ClipperLib;
 using Color = System.Drawing.Color;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
@@ -46,7 +46,7 @@ namespace HeavenStrikeAzir
             if (Program._w.IsReady() && Orbwalker.CanMove && Program.wcombo)
             {
                 var target = TargetSelector.GetTarget(Program._w.Range + 300, DamageType.Magical);
-                if (target.IsValidTarget() && !target.IsZombie && (!Soldiers.enemies.Contains(target) || Player.CountEnemiesInRange(1000) >= 2))
+                if (target.IsValidTarget() && !target.IsZombie && (!Soldiers.enemies.Contains(target) || Player.CountEnemiesInRange(1000) >= 2) || Program._q.IsReady() || !target.CanMove)
                 {
                     var x = Player.LSDistance(target.Position) > Program._w.Range ? Player.Position.LSExtend(target.Position, Program._w.Range)
                         : target.Position;
